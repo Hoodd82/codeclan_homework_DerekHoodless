@@ -1,0 +1,103 @@
+---
+title: "day_03_homework_DerekH"
+output: html_notebook
+---
+
+# Qu. 1 ----
+
+```{r}
+library(tidyverse)
+```
+
+# NA's in 'homepage' - live with these or replace where possible
+# reformat the budget price to $M's or $K's, same with revenue
+# replace zeroes in revenue with 'Not Availalble'
+# replace the zeroes in runtime with NA
+# reorder in vote_average
+
+```{r}
+movies_data <- read_csv("data/movies.csv")
+head(movies_data)
+dim(movies_data)
+```
+
+# Qu. 2 ----
+
+```{r}
+movies_selected <- movie_data %>% 
+  select(title, runtime, budget)
+movies_selected
+```
+
+# Qu. 3 ----
+
+```{r}
+movies_selected %>% 
+  summarise(NA_title = sum(is.na(title)), 
+            NA_runtime = sum(is.na(runtime)), 
+            NA_budget = sum(is.na(budget)))
+```
+
+# Qu. 4 ----
+
+```{r}
+movies_runtime <- movies_selected %>% 
+  mutate(runtime = na_if(runtime, "0"))
+
+movies_runtime %>% 
+  filter(is.na(runtime))
+```
+
+```{r}
+movies_runtime %>%
+  summarise(count_zeroes = sum(runtime == 0))
+```
+
+# Qu. 5 ----
+
+```{r}
+movies_imputed <- movies_runtime %>% 
+  mutate(runtime = coalesce(runtime, median(runtime, na.rm = TRUE)))
+movies_imputed
+```
+```{r}
+movies_imputed %>%
+  summarise(count_zeroes = sum(runtime == 0))
+```
+
+# Qu. 6 ----
+
+```{r}
+movies_imputed %>% 
+  slice_max(runtime, n = 10) %>% 
+  arrange(desc(runtime))
+```
+
+```{r}
+movies_imputed %>% 
+  slice_min(runtime, n = 10) %>% 
+  arrange()
+```
+
+# Qu. 7 ----
+
+```{r}
+movies_imputed <- movies_imputed %>% 
+  mutate(budget = if_else(budget <= 100, median(budget, na.rm = TRUE), budget))
+movies_imputed
+```
+
+# Extension Qu. 1 ----
+
+```{r}
+movie_budgets <- movies_imputed %>% 
+  mutate(budget_type = case_when(
+    budget < 12000000 ~ "Small budget",
+    budget >= 12000000 & budget < 40000000 ~ "Medium budget",
+    budget >= 40000000 ~ "Big budget",
+    TRUE ~ "other"
+  ))
+```
+
+
+
