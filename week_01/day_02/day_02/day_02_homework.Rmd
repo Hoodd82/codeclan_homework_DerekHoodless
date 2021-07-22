@@ -1,0 +1,105 @@
+---
+title: "day_02_homework"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+library(tidyverse)
+```
+
+#Qu. 1 ----
+
+```{r}
+data <- read_csv('starbucks_drinkMenu_expanded.csv')
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+dim(data)
+```
+
+```{r}
+summary(data)
+```
+
+
+#Qu. 2 ----
+
+There are no NA's
+
+```{r}
+data %>%   
+  select(Beverage_category, Beverage, Beverage_prep, Calories) %>% 
+  filter(is.na(Calories)) %>% 
+  summarise(count_of_missing_calories = n())
+```
+
+#Qu. 3 ----
+
+```{r}
+drink_calories <- data %>% 
+  mutate(calorie_diff = Calories - 135)
+drink_calories
+```
+
+#Qu. 4 ----
+
+Top 3 calorific options - Smoothies, Frappuccino & Signature Espresso
+Bottom 3 calorific options - Classic Espresso, Shaken Iced Beverage & Coffee
+
+```{r}
+data %>%
+  group_by(Beverage_category) %>% 
+  summarise(avg_calories = mean(Calories)) %>% 
+  arrange(desc(avg_calories)) %>% 
+  head(3)
+```
+
+```{r}
+data %>%
+  group_by(Beverage_category) %>% 
+  summarise(avg_calories = mean(Calories)) %>% 
+  arrange(avg_calories) %>% 
+  head(3)
+```
+
+#Qu. 5 ----
+
+```{r}
+data %>% 
+  group_by(Beverage_prep) %>% 
+  summarise(avg_calories = mean(Calories)) %>% 
+  arrange(desc(avg_calories))
+```
+
+#Qu. 6 ----
+
+```{r}
+avg_calories_all <- mean(data$Calories)
+avg_calories_all
+```
+
+
+```{r}
+data %>% 
+  group_by(Beverage_prep) %>% 
+  summarise(avg_calories = mean(Calories)) %>%
+  filter(avg_calories >= avg_calories_all) %>% 
+  arrange(desc(avg_calories))
+```
+
+#Qu. 7 ----
+
+Order a short brewed coffee!
+
+```{r}
+data %>%
+  select(Beverage_category, Beverage, Beverage_prep, Calories) %>% 
+  filter(grepl('Coffee', Beverage)) %>% 
+  arrange(Calories)
+```
+
