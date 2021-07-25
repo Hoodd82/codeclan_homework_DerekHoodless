@@ -1,0 +1,151 @@
+---
+title: "week_01_homework"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+# Load in Tidyverse & Lubridate library
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+```
+
+# Assign books.csv to books_df
+
+```{r}
+books_df <- read_csv("data/books.csv")
+```
+
+# Perform some initial checks and view dataframe
+
+```{r}
+str(books_df)
+```
+
+```{r}
+glimpse(books_df)
+```
+
+```{r}
+names(books_df)
+```
+
+
+```{r}
+books_df %>% 
+  summarise(
+    na_count = sum(is.na(.))
+    )
+```
+# Rename selected columns in accordance with style guide & tidy up language code format
+
+```{r}
+books_df_rows <- books_df %>% 
+  rename("row_id"  = "rowid",
+         "book_id" = "bookID",
+         "isbn_13" = "isbn13",
+         ) %>% 
+  mutate(language_code = recode(language_code,
+                                "eng"   = "en",
+                                "en-US" = "en-us",
+                                "en-GB" = "en-gb",
+                                "en-CA" = "en-ca")
+)
+```
+
+# Convert publication_date from character type to date ?????
+
+```{r}
+# books_df_rows %>% 
+#   mdy(publication_date, format = "%m/%d/%Y")
+```
+
+# average rating per author top 10
+
+```{r}
+books_author_ratings <- books_df_rows %>% 
+  group_by(authors) %>% 
+  summarise(avg_rating = mean(average_rating[average_rating != 0]), 
+            sum_books = n()) %>%
+  filter(sum_books >= 2) %>%
+  arrange(desc(avg_rating)) %>% 
+  head(10)
+
+books_author_ratings
+```
+
+# books published by publisher
+
+```{r}
+books_df_rows %>% 
+  group_by(publisher) %>% 
+  summarise(books_published = n(), 
+            avg_rating = mean(average_rating[average_rating != 0])) %>% 
+  arrange(desc(books_published)) %>% 
+  head(10)
+```
+
+# top 10 books written by author
+
+```{r}
+books_df_rows %>% 
+  group_by(authors) %>%
+  summarise(count= n(), 
+            avg_rating = mean(average_rating[average_rating != 0])) %>% 
+  arrange(desc(count)) %>% 
+  head(10)
+```
+
+# Stephen King top 5 books
+
+```{r}
+books_sk <- books_df_rows %>% 
+  filter(authors == "Stephen King") %>%
+  select(title, average_rating, ratings_count, publication_date, num_pages, 
+         publisher) %>%
+  arrange(desc(average_rating)) %>% 
+  distinct(title, .keep_all = TRUE)
+ 
+head(books_sk, n = 5)
+```
+
+# Stephen King books by publisher
+
+```{r}
+books_sk_pub <- books_sk %>%
+  group_by(publisher) %>% 
+  mutate(publisher = recode(publisher, "New English Library (Hodder & Stoughton)"
+                                                     = "New English Library",
+                            "Hodder & Stoughton Ltd" = "New English Library",
+                            "Hodder & Stoughton"     = "New English Library",
+                            "Simon & Schuster Audio" = "Simon Schuster Audio",
+                            "Doubleday"              = "Doubleday Books",
+                            "Pocket"                 = "Pocket Books",
+                            "Viking"                 = "Viking Books",
+                            "Signet"                 = "Penguin Signet")) %>% 
+  summarise(no_of_books = n()) %>% 
+  arrange(desc(no_of_books))
+books_sk_pub
+```
+
+# parsing dates ????
+
+```{r}
+books_sk_date <- books_sk %>%
+  select(title, average_rating, ratings_count, publication_date, num_pages, publisher) %>%
+  mutate(publication_date = as.Date(publication_date, format = "%m/%d/%Y")) %>%
+  distinct(publication_date) %>%
+  mutate(year = floor_date(publication_date, "year"))
+books_sk_date
+
+typeof(books_sk_date$publication_date)
+class(books_sk_date$publication_date)
+```
+
+
+
+
+
+
