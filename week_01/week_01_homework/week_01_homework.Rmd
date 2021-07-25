@@ -106,10 +106,13 @@ books_sk <- books_df1 %>%
   select(title, average_rating, ratings_count, publication_date, num_pages, 
          publisher) %>%
   arrange(desc(average_rating)) %>% 
-  distinct(title, .keep_all = TRUE) 
- 
-head(books_sk, n = 5)
-tail(books_sk, n = 5)
+  distinct(title, 
+           .keep_all = TRUE
+  ) 
+  
+books_sk1 <- books_sk %>% 
+  slice(c(1:5, 26:30))
+books_sk1
 ```
 
 # Stephen King books by publisher
@@ -127,22 +130,30 @@ books_sk_pub <- books_sk %>%
                             "Viking"                 = "Viking Books",
                             "Signet"                 = "Penguin Signet")) %>% 
   summarise(no_of_books = n()) %>% 
-  arrange(desc(no_of_books))
+  arrange(desc(no_of_books)
+  )
 books_sk_pub
 ```
-
-# parsing dates ????
+# dates types ????
 
 ```{r}
 books_sk_date <- books_sk %>%
-  select(title, average_rating, ratings_count, publication_date, num_pages, publisher) %>%
-  mutate(publication_date = as.Date(publication_date, format = "%m/%d/%Y")) %>%
-  distinct(publication_date) %>%
-  mutate(year = floor_date(publication_date, "year"))
-books_sk_date
+  select(title, average_rating, publication_date) %>%
+  mutate(publication_date = as.Date(publication_date, 
+                                    format = "%m/%d/%Y")) %>%
+  arrange(desc(publication_date)) %>% 
+  mutate(publication_date1 = lead(publication_date, n =1))
 
-typeof(books_sk_date$publication_date)
-class(books_sk_date$publication_date)
+z <- books_sk$publication_date - books_sk_date$publication_date1
+
+books_sk_date1 <- books_sk_date %>%
+  select(title, average_rating, publication_date) %>% 
+  mutate(time_between_books = z) %>% 
+  arrange(desc(publication_date)) 
+books_sk_date1
+
+# typeof(x)
+# class(x)
 ```
 
 
