@@ -32,18 +32,18 @@ glimpse(books_df)
 names(books_df)
 ```
 
-
 ```{r}
 books_df %>% 
   summarise(
     na_count = sum(is.na(.))
     )
 ```
-# Rename selected columns in accordance with style guide & tidy up language code format
+# remove rows with average_rating == 0 or num_pages == 0 and rename cols/rows
 
 ```{r}
-books_df_rows <- books_df %>% 
-  rename("row_id"  = "rowid",
+books_df1 <- books_df %>% 
+  filter(average_rating != 0, num_pages != 0) %>% 
+    rename("row_id"  = "rowid",
          "book_id" = "bookID",
          "isbn_13" = "isbn13",
          ) %>% 
@@ -51,21 +51,21 @@ books_df_rows <- books_df %>%
                                 "eng"   = "en",
                                 "en-US" = "en-us",
                                 "en-GB" = "en-gb",
-                                "en-CA" = "en-ca")
-)
+                                "en-CA" = "en-ca"))
+books_df1
 ```
 
 # Convert publication_date from character type to date ?????
 
 ```{r}
-# books_df_rows %>% 
+# books_df1 %>% 
 #   mdy(publication_date, format = "%m/%d/%Y")
 ```
 
 # average rating per author top 10
 
 ```{r}
-books_author_ratings <- books_df_rows %>% 
+books_author_ratings <- books_df1 %>% 
   group_by(authors) %>% 
   summarise(avg_rating = mean(average_rating[average_rating != 0]), 
             sum_books = n()) %>%
@@ -79,7 +79,7 @@ books_author_ratings
 # books published by publisher
 
 ```{r}
-books_df_rows %>% 
+books_df1 %>% 
   group_by(publisher) %>% 
   summarise(books_published = n(), 
             avg_rating = mean(average_rating[average_rating != 0])) %>% 
@@ -90,7 +90,7 @@ books_df_rows %>%
 # top 10 books written by author
 
 ```{r}
-books_df_rows %>% 
+books_df1 %>% 
   group_by(authors) %>%
   summarise(count= n(), 
             avg_rating = mean(average_rating[average_rating != 0])) %>% 
@@ -98,17 +98,18 @@ books_df_rows %>%
   head(10)
 ```
 
-# Stephen King top 5 books
+# Stephen King top 5/bottom 5 books
 
 ```{r}
-books_sk <- books_df_rows %>% 
+books_sk <- books_df1 %>% 
   filter(authors == "Stephen King") %>%
   select(title, average_rating, ratings_count, publication_date, num_pages, 
          publisher) %>%
   arrange(desc(average_rating)) %>% 
-  distinct(title, .keep_all = TRUE)
+  distinct(title, .keep_all = TRUE) 
  
 head(books_sk, n = 5)
+tail(books_sk, n = 5)
 ```
 
 # Stephen King books by publisher
