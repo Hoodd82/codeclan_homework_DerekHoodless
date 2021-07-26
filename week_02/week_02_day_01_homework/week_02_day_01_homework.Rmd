@@ -1,0 +1,115 @@
+---
+title: "week_02_day_01_homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(janitor)
+```
+
+# Qu. 1 ----
+
+```{r}
+card_base <- read_csv("CardBase.csv")
+customer_base <- read_csv("CustomerBase.csv")
+fraud_base <- read_csv("FraudBase.csv")
+transaction_base <- read_csv("TransactionBase.csv")
+```
+
+```{r}
+card_base <- card_base %>% 
+  clean_names()
+
+customer_base <- customer_base %>% 
+  clean_names()
+
+fraud_base <- fraud_base %>% 
+  clean_names()
+
+transaction_base <- transaction_base %>% 
+  clean_names()
+```
+
+# Qu. 2 ----
+
+# left join will return all rows from the card_base and any matching rows from customer_base
+
+```{r}
+left_join(card_base, customer_base, by = "cust_id")
+```
+
+# Qu. 3 ----
+
+# full join will return everything that is the left and right tables - i.e 10000 
+# records however the fraud flag will only show for 109 of the records
+
+```{r}
+full_join(fraud_base, transaction_base, by = "transaction_id")
+```
+
+# Qu. 4 ----
+
+```{r}
+inner_join(card_base, transaction_base, by = c("card_number" = "credit_card_id"))
+```
+
+# Qu. 5 & 6 ----
+
+```{r}
+hat_observations <- read_csv("hat_observations.csv")
+```
+
+```{r}
+hat_observations %>% 
+  separate(
+    col = observation,
+    into = c("hat_colour", "hat_type"),
+    sep = ","
+  ) %>% 
+  unite(
+    col = "date",
+    day, month, year,
+    sep = "/"
+  )
+```
+
+# Ext. Qu. 2.1 ----
+
+```{r}
+x <- inner_join(card_base, customer_base, by = "cust_id")
+
+y <- inner_join(x, transaction_base, by = c("card_number" = "credit_card_id"))
+
+z <- inner_join(y, fraud_base, by = "transaction_id")
+
+z
+```
+
+# Ext. Qu. 2.2 ----
+
+```{r}
+exam_scores <- read_csv("exam_scores.csv")
+```
+
+```{r}
+exam_scores %>% 
+  pivot_longer(
+    col = exam_Q1:exam_Q10,
+    names_to = "exam_question",
+    values_to = "score"
+  ) %>% 
+  separate(
+    col = exam_question,
+    into = c("exam", "question_number"),
+    sep = "_"
+  ) %>% 
+  select(id,
+         question_number,
+         score
+         )
+
+  
+```
+
