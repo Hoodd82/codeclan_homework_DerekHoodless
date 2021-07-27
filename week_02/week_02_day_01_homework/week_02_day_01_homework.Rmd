@@ -52,7 +52,7 @@ full_join(fraud_base, transaction_base, by = "transaction_id")
 # Qu. 4 ----
 
 ```{r}
-inner_join(card_base, transaction_base, by = c("card_number" = "credit_card_id"))
+semi_join(card_base, transaction_base, by = c("card_number" = "credit_card_id"))
 ```
 
 # Qu. 5 & 6 ----
