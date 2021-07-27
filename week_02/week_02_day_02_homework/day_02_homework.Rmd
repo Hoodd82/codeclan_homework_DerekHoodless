@@ -1,0 +1,116 @@
+---
+title: "week_02_day_02_homework"
+output: html_notebook
+---
+
+# Qu. 1 ----
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+cc_tweets <- read_csv("code_clan_tweets.csv")
+
+dim(cc_tweets)
+names(cc_tweets)
+```
+
+# Qu. 2 ----
+
+```{r}
+cc_tweets %>% 
+  filter(
+    is_quote == FALSE) %>% 
+  summarise(
+    total_favs = sum(favorite_count)
+)
+```
+# Qu. 3 ----
+
+```{r}
+cc_tweets %>% 
+  filter(
+    is_quote == FALSE) %>% 
+  group_by(source) %>% 
+  summarise(
+    mean_tweets = mean(retweet_count[retweet_count != 0])) %>% 
+  arrange(desc(mean_tweets)
+)
+```
+
+# Qu. 4 ----
+
+```{r}
+cc_tweets %>% 
+  group_by(media_type) %>% 
+  mutate(media_type = coalesce(media_type, 
+                               "text")) %>% 
+  summarise(
+    total_favs = sum(favorite_count)
+  )
+```
+
+# Qu. 5 ----
+
+```{r}
+cc_tweets %>%
+  summarise(mean_char = mean(str_length(text), 
+                             na.rm = TRUE)
+)
+```
+
+# Qu. 6 ----
+
+```{r}
+cc_info <- read_csv("code_clan_info.csv")
+```
+
+```{r}
+cc_tweets %>% 
+  inner_join(cc_info, 
+             by = "tweet_id")
+```
+# Qu. 7 ----
+
+```{r}
+codeclan_hashtags <- cc_tweets %>% 
+  inner_join(cc_info, 
+             by = "tweet_id") %>%
+  mutate(hashtags = str_to_lower(hashtags)) %>% 
+  filter(hashtags != na.omit(hashtags))
+
+codeclan_hashtags
+```
+
+# Qu. 8 ----
+
+```{r}
+pattern <- "c\\("
+
+codeclan_hashtags$hashtags %>% 
+  str_detect(pattern) 
+```
+
+# Qu. 9 ----
+
+```{r}
+pattern <- "[eE]dinburgh"
+
+codeclan_hashtags$hashtags %>% 
+  str_count(pattern) %>% 
+  sum()
+```
+
+# Qu. 10 ----
+
+```{r}
+pattern <- "@[a-z0-9:punct:]{4,15}"
+
+codeclan_hashtags$text %>% 
+  str_to_lower() %>% 
+  str_extract_all(pattern) %>% 
+  flatten_chr()
+```
+
