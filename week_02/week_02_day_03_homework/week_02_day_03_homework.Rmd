@@ -34,23 +34,24 @@ q2_iii
 
 ```{r}
 temperature <- round(rnorm(14, mean = 16, sd = 3), 1)
-temperature
-```
 
-```{r}
-fourteen_day_forecast <- matrix(temperature, nrow = 1, ncol = 14)
+fourteen_day_forecast <- matrix(temperature, nrow = 2, ncol = 7)
+
+# dimnames(fourteen_day_forecast) <- list(c("Week 1", "Week 2"), c(rep("Temp", 7)))
+
 fourteen_day_forecast
 ```
 
 # Qu. 4 ----
 
 ```{r}
-q4_i <- fourteen_day_forecast[1, 10]
-q4_ii <- fourteen_day_forecast[, 8:14]
-q4_iii <- fourteen_day_forecast[, c(1, 3, 5, 8, 10, 12)]
-
+q4_i <- fourteen_day_forecast[2, 3]
 q4_i
+
+q4_ii <- fourteen_day_forecast[2, 1:7]
 q4_ii
+
+q4_iii <- fourteen_day_forecast[ ,c(1,3, 5)]
 q4_iii
 ```
 
@@ -69,6 +70,8 @@ qu5_function <- function(x){
       else {
         if ((x > 10) == TRUE){
           str_c("The answer is: ", x / 10)
+        } else{
+            print("Invalid input")
           }
         }
     }
@@ -92,7 +95,7 @@ qu6_function <- function(x, y){
     print("Exactly the same")
     } 
     else {
-      if (setequal(x, y) == T){
+      if (sum(x) == sum(y)){
       print("The same") 
       } 
         else {
@@ -105,8 +108,8 @@ qu6_function <- function(x, y){
 ```
 
 ```{r}
-x <- c(1, 9, 2)
-y <- c(1, 2, 9)
+x <- c(1, 2, 3, 4, 5, 6)
+y <- c(1, 2, 3, 4, 15, 6)
 
 qu6_function(x, y)
 ```
@@ -129,4 +132,7 @@ times_table(9)
 ```
 
 # Qu. 8 ----
+
+
+
 
