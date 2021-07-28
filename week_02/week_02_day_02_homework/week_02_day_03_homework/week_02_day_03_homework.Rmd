@@ -1,0 +1,132 @@
+---
+title: "week_02_day_03_homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+# Qu. 1 ----
+
+```{r}
+weather_forecast <- list(
+  Thursday = list(temperature = 17, chance_of_rain = 72, wind_speed = 20),
+  Friday = list(temperature = 18, chance_of_rain = 57, wind_speed = 19),
+  Saturday = list(tenperature = 15, chance_of_rain = 56, wind_speed = 24)
+)
+```
+
+# Qu. 2 ----
+
+```{r}
+q2_i <- weather_forecast$Thursday$chance_of_rain
+q2_ii <- weather_forecast$Friday$wind_speed
+q2_iii <- weather_forecast$Friday$temperature
+
+q2_i
+q2_ii
+q2_iii
+```
+
+# Qu. 3 ----
+
+```{r}
+temperature <- round(rnorm(14, mean = 16, sd = 3), 1)
+temperature
+```
+
+```{r}
+fourteen_day_forecast <- matrix(temperature, nrow = 1, ncol = 14)
+fourteen_day_forecast
+```
+
+# Qu. 4 ----
+
+```{r}
+q4_i <- fourteen_day_forecast[1, 10]
+q4_ii <- fourteen_day_forecast[, 8:14]
+q4_iii <- fourteen_day_forecast[, c(1, 3, 5, 8, 10, 12)]
+
+q4_i
+q4_ii
+q4_iii
+```
+
+# Qu. 5 ----
+
+```{r}
+qu5_function <- function(x){
+  
+  if (is.character(x) == T){
+    str_c("The answer is: ", x)
+    }
+    else {
+      if ((x <= 10) == TRUE){
+      str_c("The answer is: ", x)
+      } 
+      else {
+        if ((x > 10) == TRUE){
+          str_c("The answer is: ", x / 10)
+          }
+        }
+    }
+}
+```
+
+```{r}
+# pass x as a character or numeric.
+
+x <- "10"
+
+qu5_function(x)
+```
+
+# Qu. 6 ----
+
+```{r}
+qu6_function <- function(x, y){
+  
+  if (identical(x, y) == T){
+    print("Exactly the same")
+    } 
+    else {
+      if (setequal(x, y) == T){
+      print("The same") 
+      } 
+        else {
+          if (setequal(x, y) == F){
+          print("Different")
+          }
+    }
+  }
+}
+```
+
+```{r}
+x <- c(1, 9, 2)
+y <- c(1, 2, 9)
+
+qu6_function(x, y)
+```
+
+# Ex. Questions ----
+
+# Qu. 7 ----
+
+```{r}
+times_table <- function(x){
+  
+  for (i in 1:12){
+    print(str_c(x, " x ", i, " = ", x * i))
+  }
+}
+```
+
+```{r}
+times_table(9)
+```
+
+# Qu. 8 ----
+
