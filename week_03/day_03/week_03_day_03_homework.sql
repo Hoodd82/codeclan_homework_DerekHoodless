@@ -208,6 +208,35 @@ GROUP BY
 ORDER BY
 	department, grade;
 
+-- Del's solution
+
+SELECT
+	department,
+	SUM((grade =1)::INT)/COUNT(id)::REAL
+FROM
+	employees
+GROUP BY department;
+
+-- Aileen's solution
+
+WITH depart_g1 AS (
+SELECT 
+	department,
+	COUNT(id) AS employ_g1
+FROM employees
+WHERE grade = 1
+GROUP BY department
+)
+SELECT 
+	employees.department,
+	COUNT(employees.id) AS employ_all,
+	depart_g1.employ_g1,
+	depart_g1.employ_g1::FLOAT/COUNT(employees.id) 
+FROM employees
+LEFT JOIN depart_g1 
+ON employees.department = depart_g1.department
+GROUP BY employees.department, depart_g1.employ_g1
+
 -- EXT
 
 -- Qu. 1
