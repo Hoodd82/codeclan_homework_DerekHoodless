@@ -1,0 +1,85 @@
+---
+title: "week_04_homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+# Using plyr verbs ----
+
+```{r}
+salary_data <- read_csv("data/salaries.csv")
+```
+
+```{r}
+salary_data %>% 
+  select(beginning_salary, current_salary) %>% 
+  filter(beginning_salary > 20000 | current_salary > 20000) %>% 
+  arrange(desc(beginning_salary, current_salary)) %>% 
+  mutate(beginning_salary_pence = beginning_salary * 100,
+         current_salary_pence = current_salary * 100)
+```
+```{r}
+salary_data %>% 
+  mutate(age = as.integer(age)) %>% 
+  summarise(max_age = max(age),
+            min_age = min(age))
+```
+```{r}
+salary_data %>% 
+  summarise(min_salary = min(current_salary),
+            max_salary = max(current_salary))
+```
+```{r}
+salary_data %>% 
+  filter(age < 30) %>% 
+  arrange(desc(educational_level))
+```
+```{r}
+salary_data %>% 
+  select(where(is.numeric))
+```
+```{r}
+salary_data %>% 
+  filter(work_experience < 2 | educational_level < 12)
+```
+```{r}
+salary_data %>% 
+   mutate(beginning_salary_£Ks = beginning_salary / 1000,
+         current_salary_Ks = current_salary / 1000)
+```
+
+```{r}
+salary_data %>% 
+  filter(gender == "female" & employment_category == "security officer")
+```
+
+# 2 Pipes ----
+
+```{r}
+salary_data %>% 
+  filter(educational_level <= 16) %>% 
+  group_by(educational_level) %>% 
+  summarise(avg_salary = mean(current_salary)) %>% 
+  arrange(desc(avg_salary))
+```
+
+```{r}
+salary_data %>% 
+  filter(work_experience >= 2) %>% 
+  group_by(employment_category, gender) %>% 
+  summarise(avg_salary = mean(current_salary)) %>% 
+  arrange(desc(avg_salary), .by_group = TRUE)
+```
+
+```{r}
+salary_data %>% 
+  group_by(employment_category) %>% 
+  summarise(mean_med_diff = mean(current_salary) - median(current_salary)) %>% 
+  arrange(desc(mean_med_diff))
+```
+
+# 3 missing values exercise ----
+
