@@ -83,3 +83,48 @@ salary_data %>%
 
 # 3 missing values exercise ----
 
+```{r}
+beer_data <- read_delim("data/beer.txt", delim = ";")
+```
+
+# Qu. 1 Find all the observations where the carbohydrates are missing ----
+
+```{r}
+beer_data <- beer_data %>% 
+  mutate(carbohydrates = na_if(carbohydrates, "*"),
+         calories = na_if(calories, "*"),
+         percent = na_if(percent, "*"))
+
+beer_data
+```
+```{r}
+missing_carbs <- beer_data %>% 
+  filter(!is.na(carbohydrates))
+
+missing_carbs
+```
+# Qu. 2 Find all observations where the brand is missing ----
+
+```{r}
+missing_brand <- beer_data %>% 
+  filter(!is.na(brand))
+
+missing_brand
+```
+# Qu. 3 What is different about the observations missing carbs and the observations missing brand?
+# To clean the data should we drop the missing brand of the rows missing carbs?
+
+```{r}
+
+```
+
+# Task 4 - recoding exercise ----
+
+```{r}
+inmates_data <- read_tsv("data/inmates.tsv")
+```
+
+```{r}
+
+```
+
