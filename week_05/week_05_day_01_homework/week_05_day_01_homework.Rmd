@@ -1,0 +1,151 @@
+---
+title: "week_05_day_01_homework"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+# load libraries
+```{r}
+library(tidyverse)
+library(CodeClanData)
+library(janitor)
+library(scales)
+```
+
+# load datasets
+```{r}
+data("qb_revenue_breakdown")
+data("qb_monthly_sales")
+data("qb_competitors")
+data("qb_device_data")
+```
+
+# Qu. 1 ----
+
+```{r}
+qb_revenue_breakdown %>% 
+  clean_names() %>% 
+  ggplot() +
+  aes(x = product, y = revenue, fill = year) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    x = "Products",
+    y = "\nRevenue",
+    title = "Revenue Breakdown per Product",
+    fill = "Year"
+  ) +
+  theme_bw()
+```
+
+# Qu. 2 ----
+
+```{r}
+qb_monthly_sales %>% 
+  clean_names() %>% 
+  filter(cashflow == "Kwikbit Unit 1 Sales" &
+           date >= "2019-01-01") %>% 
+  ggplot() +
+  aes(x = date, y = amount) +
+  geom_line(colour = "red") +
+  labs(
+    x = "\nDate",
+    y = "Revenue\n",
+    title = "KwikBit Unit 1 2019 Sales\n"
+  ) +
+  theme_bw()
+```
+
+# Qu. 3 ----
+
+```{r}
+qb_monthly_sales %>% 
+  clean_names() %>% 
+  filter(cashflow != "Total Revenue" &
+           date >= "2019-01-01") %>% 
+  ggplot() +
+  aes(x = date, y = amount, colour = cashflow) +
+  geom_line() +
+  labs(
+    x = "\nDate",
+    y = "Revenue\n",
+    title = "KwikBit Unit 1 2019 Sales and Costs",
+    colour = "Cash Flow"
+  ) +
+  theme_bw() 
+```
+
+# Qu. 4 ----
+
+```{r}
+qb_competitors %>%
+  clean_names() %>% 
+  ggplot() +
+  aes(x = year, y = revenue, fill = company) +
+  geom_area() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    x = "\nYear",
+    y = "Revenue (£)\n",
+    title = "Competitor Market Share",
+    fill = "Competitors"
+  ) +
+  theme_bw()
+```
+
+# Qu. 5 ----
+
+```{r}
+qb_competitors %>% 
+  clean_names() %>%
+  mutate(revenue = revenue/1000) %>% 
+  ggplot() +
+  aes(x = year, y = revenue, colour = company) +
+  geom_line(alpha = 0.5) +
+  geom_point(alpha = 1) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    x = "\nYear",
+    y = "Revenue (£k)\n",
+    title = "Competitor Revenue",
+    colour = "Competitors"
+  ) +
+  theme_bw()
+```
+
+# Qu. 6 ----
+
+```{r}
+device_data <- qb_device_data %>%
+  clean_names() %>%
+  mutate(device = recode(device,"qikbit1" = "KwikBit 1")) %>% 
+  group_by(device, id, hours) %>% 
+  summarise(step_count = sum(counts), .groups = "keep")
+
+device_data %>% 
+  ggplot() +
+  aes(x = hours, y = step_count, group = id, colour = device) +
+  geom_line(alpha = 0.5) +
+  facet_wrap(id ~ device, ncol = 4) +
+  labs(
+    x = "\nHours",
+    y = "Step Count\n",
+    title = "Step Count by Device"
+  ) +
+  theme_bw()
+
+# device_data %>%
+#   ggplot() +
+#   aes(x = hours, y = step_count, group = device, colour = id) +
+#   geom_line() +
+#   facet_grid(~ id) +
+#   labs(
+#     x = "Setp Count\n",
+#     y = "\ntime",
+#     title = "Step Count by Device"
+#   )
+```
+
+
+
