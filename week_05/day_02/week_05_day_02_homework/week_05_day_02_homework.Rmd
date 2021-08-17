@@ -35,7 +35,8 @@ backpack %>%
     x = "Backpack Weight",
     y = "Count",
     title = "Backpack Weight Distribution"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Qu. 3 ----
@@ -55,7 +56,8 @@ backpack %>%
     title = "Backpack Weight Distribution",
     subtitle = "by sex"
   ) +
-  facet_wrap(~ sex)
+  facet_wrap(~ sex) +
+  theme_bw()
 
 # lets check the average values for both females and males!
 backpack %>% 
@@ -73,7 +75,8 @@ backpack %>%
   ggplot() +
   aes(x = body_weight, y = backpack_weight) +
   geom_line() +
-  geom_smooth()
+  geom_smooth() +
+  theme_bw()
 ```
 
 # Qu. 5 ----
@@ -95,7 +98,8 @@ backpack %>%
     y = "Backpack Weight",
     title = "Backpack Weight vs. Body Weight",
     subtitle = "Split by sex"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Qu. 6 ----
@@ -119,7 +123,8 @@ backpack %>%
     x = "Back Problems",
     y = "Count",
     title = "Proportion of those with back problems"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Qu. 7 -----
@@ -141,7 +146,8 @@ backpack %>%
     y = "Count",
     title = "Proportion of those with back problems",
     subtitle = "split by sex"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Qu. 8 ----
@@ -161,7 +167,8 @@ backpack %>%
     y = "Backpack Weight",
     title = "Body Weight vs. Backpack Weight",
     subtitle = "split by sex and reported back problems"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Ext. Qu. 1 ----
@@ -185,27 +192,26 @@ backpack %>%
     x = "Reported Back Problems",
     y = "No. of Students",
     title = "Relationship between Back Pain and Year Groups"
-  )
+  ) +
+  theme_bw()
 ```
 
 # Ext. Qu. 2 ----
 
 ```{r}
 backpack %>%
-    filter(year != 0) %>% 
-    mutate(has_back_problems = case_when(
-    back_problems == 1 ~ "back_problems",
-    back_problems == 0 ~ "no_back_problems"
-  )) %>% 
+  filter(year != 0) %>%
+  group_by(year) %>% 
+  summarise(avg_backpack_weight = mean(backpack_weight)) %>% 
   ggplot() +
-  aes(x = has_back_problems) +
-  geom_bar(fill = "plum4") +
-  facet_wrap(~ year) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  aes(x = year, y = avg_backpack_weight) +
+  geom_line(colour = "burlywood4") +
   labs(
-    x = "Reported Back Problems",
-    y = "No. of Students",
-    title = "Relationship between Back Pain and Year Groups"
-  )
+    x = "\nSchool Year",
+    y = "Average Backpack Weight\n",
+    title = "Backpack Weight vs Year"
+  ) +
+  scale_x_continuous(breaks = 1:6) +
+  theme_bw()
 ```
 
