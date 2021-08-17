@@ -1,0 +1,211 @@
+---
+title: "week_05_day_02_homework"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+```
+
+```{r}
+backpack <- CodeClanData::backpack
+```
+
+# Qu. 1 ----
+
+```{r}
+view(backpack)
+dim(backpack)
+summary(backpack)
+```
+
+# Qu. 2 ----
+
+The data looks almost like a bell curve or normal distribution, minus a few outliers.
+
+```{r}
+backpack %>% 
+  ggplot() +
+  aes(x = backpack_weight) +
+  geom_histogram(fill = "purple", colour = "white") +
+  labs(
+    x = "Backpack Weight",
+    y = "Count",
+    title = "Backpack Weight Distribution"
+  )
+```
+
+# Qu. 3 ----
+
+Again, the distributions appears to be a normal distribution...ish.
+It would appear from the graphs that males carry only slightly heavier backpacks. 
+For females, the average weight is 11 and for the males, 12.4. 
+
+```{r}
+backpack %>% 
+  ggplot() +
+  aes(x = backpack_weight) +
+  geom_histogram(fill = "purple", colour = "white") +
+  labs(
+    x = "Backpack Weight",
+    y = "Count",
+    title = "Backpack Weight Distribution",
+    subtitle = "by sex"
+  ) +
+  facet_wrap(~ sex)
+
+# lets check the average values for both females and males!
+backpack %>% 
+  group_by(sex) %>% 
+  summarise(avg_weight = mean(backpack_weight))
+```
+
+# Qu. 4 ----
+
+As body weight increases to a point, backpack weight also increases. After this point
+back pack weight decreases.
+
+```{r}
+backpack %>% 
+  ggplot() +
+  aes(x = body_weight, y = backpack_weight) +
+  geom_line() +
+  geom_smooth()
+```
+
+# Qu. 5 ----
+
+There is a relationship between body weight and backpack weight for both sexes,
+i.e. backpack weight increases with body weight but it is subtle. For the males, 
+backpack weight actually begins to decrease over body weight of 200, for females 
+the relationship is quite stable.
+
+```{r}
+backpack %>% 
+  ggplot() +
+  aes(x = body_weight, y = backpack_weight) +
+  geom_line() +
+  geom_smooth() +
+  facet_wrap(~ sex, ncol = 1) +
+  labs(
+    x = "Body Weight",
+    y = "Backpack Weight",
+    title = "Backpack Weight vs. Body Weight",
+    subtitle = "Split by sex"
+  )
+```
+
+# Qu. 6 ----
+
+32% of people in the backpack dataset reported that they suffer from back pain.
+
+```{r}
+backpack %>%
+  group_by() %>% 
+  summarise(back_pain = sum(back_problems) / n())
+
+backpack %>%
+  mutate(has_back_problems = case_when(
+    back_problems == 1 ~ "back_problems",
+    back_problems == 0 ~ "no_back_problems"
+  )) %>% 
+  ggplot() +
+  aes(x = has_back_problems) +
+  geom_bar(fill = "lightblue") +
+  labs(
+    x = "Back Problems",
+    y = "Count",
+    title = "Proportion of those with back problems"
+  )
+```
+
+# Qu. 7 -----
+
+24% of females and 8% of males in the dataset suffer from back problems.
+
+```{r}
+backpack %>%
+  mutate(has_back_problems = case_when(
+    back_problems == 1 ~ "back_problems",
+    back_problems == 0 ~ "no_back_problems"
+  )) %>% 
+  ggplot() +
+  aes(x = has_back_problems) +
+  geom_bar(fill = "lightblue") +
+  facet_wrap(~ sex) +
+  labs(
+    x = "Back Problems",
+    y = "Count",
+    title = "Proportion of those with back problems",
+    subtitle = "split by sex"
+  )
+```
+
+# Qu. 8 ----
+
+```{r}
+backpack %>%
+  mutate(has_back_problems = case_when(
+    back_problems == 1 ~ "back_problems",
+    back_problems == 0 ~ "no_back_problems"
+  )) %>% 
+  ggplot() +
+  aes(x = body_weight, y = backpack_weight, size = sex) +
+  geom_point(colour = "lightsalmon3", alpha = 0.5) +
+  facet_wrap(~ has_back_problems) +
+  labs(
+    x = "Body Weight",
+    y = "Backpack Weight",
+    title = "Body Weight vs. Backpack Weight",
+    subtitle = "split by sex and reported back problems"
+  )
+```
+
+# Ext. Qu. 1 ----
+
+Year 3 has the highest number of students who reported they suffer from back problems.
+No students from year 6 reported any back problems. 
+
+```{r}
+backpack %>%
+    filter(year != 0) %>% 
+    mutate(has_back_problems = case_when(
+    back_problems == 1 ~ "back_problems",
+    back_problems == 0 ~ "no_back_problems"
+  )) %>% 
+  ggplot() +
+  aes(x = has_back_problems) +
+  geom_bar(fill = "plum4") +
+  facet_wrap(~ year) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Reported Back Problems",
+    y = "No. of Students",
+    title = "Relationship between Back Pain and Year Groups"
+  )
+```
+
+# Ext. Qu. 2 ----
+
+```{r}
+backpack %>%
+    filter(year != 0) %>% 
+    mutate(has_back_problems = case_when(
+    back_problems == 1 ~ "back_problems",
+    back_problems == 0 ~ "no_back_problems"
+  )) %>% 
+  ggplot() +
+  aes(x = has_back_problems) +
+  geom_bar(fill = "plum4") +
+  facet_wrap(~ year) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Reported Back Problems",
+    y = "No. of Students",
+    title = "Relationship between Back Pain and Year Groups"
+  )
+```
+
