@@ -90,7 +90,7 @@ the relationship is quite stable.
 backpack %>% 
   ggplot() +
   aes(x = body_weight, y = backpack_weight) +
-  geom_line() +
+  geom_point() +
   geom_smooth() +
   facet_wrap(~ sex, ncol = 1) +
   labs(
@@ -159,7 +159,7 @@ backpack %>%
     back_problems == 0 ~ "no_back_problems"
   )) %>% 
   ggplot() +
-  aes(x = body_weight, y = backpack_weight, size = sex) +
+  aes(x = body_weight, y = backpack_weight, shape = sex) +
   geom_point(colour = "lightsalmon3", alpha = 0.5) +
   facet_wrap(~ has_back_problems) +
   labs(
@@ -187,7 +187,6 @@ backpack %>%
   aes(x = has_back_problems) +
   geom_bar(fill = "plum4") +
   facet_wrap(~ year) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(
     x = "Reported Back Problems",
     y = "No. of Students",
