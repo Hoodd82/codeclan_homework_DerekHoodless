@@ -1,49 +1,75 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(tidyverse)
+library(shinythemes)
 
-# Define UI for application that draws a histogram
+olympics_overall_medals <- read_csv("data/olympics_overall_medals.csv")
+
+all_teams <- unique(olympics_overall_medals$team)
+
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
+    
+    tags$h6(titlePanel("Olympic Medals")),
+    
+    theme = shinytheme("slate"),
+    
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            radioButtons("nothing_here",
+                         "just some radio buttons", 
+                         choices = c("TRUE", "FALSE")
+            )
         ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
+        
+        tabsetPanel(
+            tabPanel("Plot",
+                     plotOutput("medal_plot")
+            ), 
+            
+            tabPanel(tags$i("Which season"),
+                     radioButtons("season_input",
+                                  "Summer or Winter Olympics?",
+                                  choices = c("Summer", "Winter")
+                     )
+            ), 
+            
+            tabPanel("Which team?",
+                     selectInput("team_input",
+                                 "Which Team?",
+                                 choices = all_teams
+                     )
+                     
+            ),
+            
+            tabPanel("???",
+                     selectInput("???_input",
+                                 "Which ???",
+                                 choices = c(1, 2, 3)
+                     )
+                     
+            ),
+            
+            tabPanel("Link to Olympics site",
+                     
+                     tags$a("The Olympics website",
+                            href = "https://www.olympic.org/")
+                     
+            )
         )
     )
 )
-
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    
+    output$medal_plot <- renderPlot({
+        olympics_overall_medals %>%
+            filter(team == input$team_input) %>%
+            filter(season == input$season_input) %>%
+            ggplot() +
+            aes(x = medal, y = count, fill = medal) +
+            geom_col() +
+            scale_fill_manual(values = c("brown",
+                                         "pink",
+                                         "yellow"))
     })
 }
 
-# Run the application 
 shinyApp(ui = ui, server = server)
