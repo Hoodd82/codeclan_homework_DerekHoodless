@@ -1,0 +1,158 @@
+---
+title: "week_06_day_01_homework"
+output: html_notebook
+---
+
+```{r}
+library(prob)
+library(gtools)
+library(tidyverse)
+```
+
+# Titanic
+
+```{r}
+titanic_data <- read_csv("data/titanic.csv")
+```
+
+```{r}
+# probability of being crew and surviving
+titanic_data_crew_survived <- titantic_data %>% 
+  filter(!class %in% c("1st", "2nd", "3rd")) %>% 
+  mutate(survived = case_when(
+    survived == "yes" ~ TRUE,
+    survived == "no" ~ FALSE
+  )) %>% 
+  summarise(prob = sum(survived) / n())
+
+titanic_data_crew_survived
+```
+
+```{r}
+# probability of being a passenger and surviving
+titanic_data_passenger_survived <- titantic_data %>% 
+  filter(class %in% c("1st", "2nd", "3rd")) %>% 
+  mutate(survived = case_when(
+    survived == "yes" ~ TRUE,
+    survived == "no" ~ FALSE
+  )) %>% 
+  summarise(prob = sum(survived) / n())
+
+titanic_data_passenger_survived
+```
+
+# MVP ----
+
+# Qu. 1 ----
+
+```{r}
+# probability = 2/3
+
+# there are 4 possibilities less than 5 our of 6 outcomes, therefore 4/6 or 2/3.
+```
+
+# Qu. 2 ----
+
+```{r}
+s_three_dice <- rolldie(3)
+
+s_three_dice
+
+# there are 216 outcomes
+```
+
+# Qu. 3.1 ----
+
+```{r}
+s_roll_four_dice <- rolldie(4) %>%
+  mutate(total = X1 + X2 + X3 + X4) %>% 
+  filter(total %in% c(5, 6, 7))
+
+nrow(s_roll_four_dice)
+
+# 34 outcomes which equal 5, 6, or 7
+```
+
+# Qu. 3.2 ----
+
+```{r}
+prob <- nrow(s_roll_four_dice) / nrow(rolldie(4))
+prob
+
+# probability is 0.00078
+```
+
+# Qu. 3.3 ----
+
+```{r}
+# assumption is that rolling one die does not affect the outcome of rolling any subsequent die rolling
+```
+
+# Qu. 4 ----
+
+```{r}
+five_people <- c("1.8", "1.65", "1.77", "1.86", "1.59")
+
+five_chairs <- as_tibble(
+  permutations(
+    n = 5,
+    r = 5,
+    v = five_people,
+    repeats.allowed = FALSE
+  )
+)
+
+five_chairs_ordered <- five_chairs %>% 
+  filter(V1 < V2,
+         V2 < V3,
+         V3 < V4,
+         V4 < V5) %>% 
+  summarise(prob = n() / nrow(five_chairs))
+
+five_chairs_ordered
+
+# probability of sitting in the chairs ordered from shortest to tallest is 0.0083
+```
+
+# Qu. 5.1 ----
+
+```{r}
+s_six_dice <- rolldie(6)
+
+six_dice_ordered <- s_six_dice %>% 
+  filter(isin(., c(6, 5, 4, 3, 2, 1), ordered = TRUE)) %>% 
+  summarise(prob = n() / nrow(s_six_dice))
+
+six_dice_ordered
+
+# probability is 2.14E-05
+```
+
+# Qu. 5.2 ----
+
+```{r}
+s_six_dice <- rolldie(6)
+
+six_dice_ordered <- s_six_dice %>% 
+  filter(isin(., c(6, 5, 4, 3, 2, 1), ordered = FALSE)) %>% 
+  summarise(prob = n() / nrow(s_six_dice))
+
+six_dice_ordered
+
+# probability is 0.015
+```
+
+# Qu. 6 ----
+
+```{r}
+spade_card_prob <- cards() %>% 
+  mutate(black_card = if_else(
+    suit == "Spade" | suit == "Club",
+    TRUE, FALSE)) %>% 
+  summarise(prob = sum(black_card) / n())
+
+spade_card_prob
+
+# the probability is 0.5
+```
+
