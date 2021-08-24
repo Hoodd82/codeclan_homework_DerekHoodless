@@ -229,69 +229,13 @@ library(MASS)</code></pre>
 <h1>Qu. 1 —-</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9iaWxlX2RhdGEgPC0gcmVhZF9jc3YoXCJkYXRhLzIwMTkwOTI4LWl0ZW1zLmNzdlwiKVxuYGBgIn0= -->
-<pre class="r"><code>mobile_data &lt;- read_csv(&quot;data/20190928-items.csv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9iaWxlX2RhdGEgPC0gcmVhZF9jc3YoXCJkYXRhLzIwMTkwOTI4LWl0ZW1zLmNzdlwiKVxuXG5nbGltcHNlKG1vYmlsZV9kYXRhKVxuaGVhZChtb2JpbGVfZGF0YSlcbnN1bW1hcnkobW9iaWxlX2RhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>mobile_data &lt;- read_csv(&quot;data/20190928-items.csv&quot;)
+
+glimpse(mobile_data)
+head(mobile_data)
+summary(mobile_data)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5jb2xzKFxuICBhc2luID0gY29sX2NoYXJhY3RlcigpLFxuICBicmFuZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdGl0bGUgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHVybCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW1hZ2UgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHJhdGluZyA9IGNvbF9kb3VibGUoKSxcbiAgcmV2aWV3VXJsID0gY29sX2NoYXJhY3RlcigpLFxuICB0b3RhbFJldmlld3MgPSBjb2xfZG91YmxlKCksXG4gIHByaWNlcyA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
-<pre><code>
-── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-cols(
-  asin = col_character(),
-  brand = col_character(),
-  title = col_character(),
-  url = col_character(),
-  image = col_character(),
-  rating = col_double(),
-  reviewUrl = col_character(),
-  totalReviews = col_double(),
-  prices = col_character()
-)</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2xpbXBzZShtb2JpbGVfZGF0YSlcbmBgYCJ9 -->
-<pre class="r"><code>glimpse(mobile_data)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNzkyXG5Db2x1bW5zOiA5XG4kIGFzaW4gICAgICAgICA8Y2hyPiBcIkIwMDAwU1gyVUNcIiwgXCJCMDAwOU41TDdLXCIsIFwiQjAwMFNLVFowU1wiLCBcIkIwMDE5OE0xMk1cIiwgXCJCMDAxQU80T1VDXCIsIFwiQjAwMURDSkFKR1wiLCBcIkIwMDFEWlk0S0lcIiwgXCJCMDAxR1EzREpNXCIsIFwiQjAw4oCmXG4kIGJyYW5kICAgICAgICA8Y2hyPiBcIk5va2lhXCIsIFwiTW90b3JvbGFcIiwgXCJNb3Rvcm9sYVwiLCBcIk5va2lhXCIsIFwiTW90b3JvbGFcIiwgXCJNb3Rvcm9sYVwiLCBcIlNvbnlcIiwgXCJOb2tpYVwiLCBcIk5va2lhXCIsIFwiU2Ftc3VuZ1wiLCBcIk1vdG9yb2xhXCIsIFwi4oCmXG4kIHRpdGxlICAgICAgICA8Y2hyPiBcIkR1YWwtQmFuZCAvIFRyaS1Nb2RlIFNwcmludCBQQ1MgUGhvbmUgdy8gVm9pY2UgQWN0aXZhdGVkIERpYWxpbmcgJiBCcmlnaHQgV2hpdGUgQmFja2xpdCBTY3JlZW5cIiwgXCJNb3Rvcm9sYSBJMjY1IHBob+KAplxuJCB1cmwgICAgICAgICAgPGNocj4gXCJodHRwczovL3d3dy5hbWF6b24uY29tL0R1YWwtQmFuZC1UcmktTW9kZS1BY3RpdmF0ZWQtRGlhbGluZy1CYWNrbGl0L2RwL0IwMDAwU1gyVUNcIiwgXCJodHRwczovL3d3dy5hbWF6b24uY29tL01vdG9yb2zigKZcbiQgaW1hZ2UgICAgICAgIDxjaHI+IFwiaHR0cHM6Ly9tLm1lZGlhLWFtYXpvbi5jb20vaW1hZ2VzL0kvMjE0M0VCUTIxMEwuX0FDX1VZMjE4X1NFQVJDSDIxMzg4OF9GTXdlYnBfUUw3NV8uanBnXCIsIFwiaHR0cHM6Ly9tLm1lZGlhLWFtYXpvbi5j4oCmXG4kIHJhdGluZyAgICAgICA8ZGJsPiAzLjAsIDIuOSwgMi42LCAyLjQsIDMuMywgMy4yLCAyLjAsIDIuNywgMy4yLCAzLjUsIDIuOSwgMi45LCAyLjgsIDIuOCwgMi42LCAzLjIsIDIuOSwgMi4wLCAzLjQsIDMuNSwgMy40LCAzLjQsIDIuNywgM+KAplxuJCByZXZpZXdVcmwgICAgPGNocj4gXCJodHRwczovL3d3dy5hbWF6b24uY29tL3Byb2R1Y3QtcmV2aWV3cy9CMDAwMFNYMlVDXCIsIFwiaHR0cHM6Ly93d3cuYW1hem9uLmNvbS9wcm9kdWN0LXJldmlld3MvQjAwMDlONUw3S1wiLCBcImh0dHBzOi8vd+KAplxuJCB0b3RhbFJldmlld3MgPGRibD4gMTQsIDcsIDIyLCA1LCAyMSwgMTIsIDEsIDMsIDgsIDEzMywgMiwgMTgsIDIwMSwgNzYsIDEzMSwgNjYsIDMsIDE1LCAxMDIsIDE0NiwgMzQ4LCA1NiwgNzMsIDIzLCA4LCAxOTksIDI4LCAyNDgsIDgzLCDigKZcbiQgcHJpY2VzICAgICAgIDxjaHI+IE5BLCBcIiQ0OS45NVwiLCBOQSwgTkEsIE5BLCBOQSwgXCIkNzguOTlcIiwgTkEsIFwiJDk5Ljk5XCIsIFwiJDU5Ljg5XCIsIFwiJDk5Ljk1XCIsIFwiJDE0OS45NVwiLCBOQSwgTkEsIE5BLCBOQSwgXCIkNzkuMDBcIiwgTkEsIE7igKZcbiJ9 -->
-<pre><code>Rows: 792
-Columns: 9
-$ asin         &lt;chr&gt; &quot;B0000SX2UC&quot;, &quot;B0009N5L7K&quot;, &quot;B000SKTZ0S&quot;, &quot;B00198M12M&quot;, &quot;B001AO4OUC&quot;, &quot;B001DCJAJG&quot;, &quot;B001DZY4KI&quot;, &quot;B001GQ3DJM&quot;, &quot;B00…
-$ brand        &lt;chr&gt; &quot;Nokia&quot;, &quot;Motorola&quot;, &quot;Motorola&quot;, &quot;Nokia&quot;, &quot;Motorola&quot;, &quot;Motorola&quot;, &quot;Sony&quot;, &quot;Nokia&quot;, &quot;Nokia&quot;, &quot;Samsung&quot;, &quot;Motorola&quot;, &quot;…
-$ title        &lt;chr&gt; &quot;Dual-Band / Tri-Mode Sprint PCS Phone w/ Voice Activated Dialing &amp; Bright White Backlit Screen&quot;, &quot;Motorola I265 pho…
-$ url          &lt;chr&gt; &quot;https://www.amazon.com/Dual-Band-Tri-Mode-Activated-Dialing-Backlit/dp/B0000SX2UC&quot;, &quot;https://www.amazon.com/Motorol…
-$ image        &lt;chr&gt; &quot;https://m.media-amazon.com/images/I/2143EBQ210L._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg&quot;, &quot;https://m.media-amazon.c…
-$ rating       &lt;dbl&gt; 3.0, 2.9, 2.6, 2.4, 3.3, 3.2, 2.0, 2.7, 3.2, 3.5, 2.9, 2.9, 2.8, 2.8, 2.6, 3.2, 2.9, 2.0, 3.4, 3.5, 3.4, 3.4, 2.7, 3…
-$ reviewUrl    &lt;chr&gt; &quot;https://www.amazon.com/product-reviews/B0000SX2UC&quot;, &quot;https://www.amazon.com/product-reviews/B0009N5L7K&quot;, &quot;https://w…
-$ totalReviews &lt;dbl&gt; 14, 7, 22, 5, 21, 12, 1, 3, 8, 133, 2, 18, 201, 76, 131, 66, 3, 15, 102, 146, 348, 56, 73, 23, 8, 199, 28, 248, 83, …
-$ prices       &lt;chr&gt; NA, &quot;$49.95&quot;, NA, NA, NA, NA, &quot;$78.99&quot;, NA, &quot;$99.99&quot;, &quot;$59.89&quot;, &quot;$99.95&quot;, &quot;$149.95&quot;, NA, NA, NA, NA, &quot;$79.00&quot;, NA, N…</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChtb2JpbGVfZGF0YSlcbmBgYCJ9 -->
-<pre class="r"><code>head(mobile_data)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6OSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI2IHggOSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE3VldXNVBhTmhUMjdzSW1NRTBtTStsakgvVFFaanFUeXNiY0ZqclRHWXdodSt5YXkyTFlTeDdDQ05zQkZXTzV0bGphUHZWdnRMK3AvVU45U0NyYkVzV2tUTVBEbmhsYjBwSE9wM1BPcDl1d2RWZkszK1VsU1RxUk1rZnNuMlZWS1RzZXZZRTFTY29jczhhUmxKRnlVZmt6NjM3SktsSGpCZnRPZVVlK1dXQmkzaFhIK3JhbTNxc1laMWZiR3ZOcTlMWmdibW5VZXEyckZydmJHcTFmN3FkdzFKWitxVjJlNzh5WjdaRUZScnp4dEVzb0NZaTdyLzJaZzlNenZHdXRrQXVieUxPQkFrWUJobDFpTzhEMEEreFJNTkJOTUpnVHp3RnJCZHdRYkRsQXN5aCtRTlN4UVFzakYzc3o4QW8wQXp5YlUzQTd4OVFCVFdRdFhFeUJhUVdPNC9GWlhvclpRYWRZclFBL3d1UmRaOTMrcUQvc0d4clExV29OQTIzMGFnVDBUdTk4YkdoRE1CaTJCMXFuQmM3N2c0dCtydzMwdG1HQXVNck4xVGhvVUswVUNzQjBNZk85NlRJUGxCQzdEMDRBeHA1THJBWHpWbmRjTjRtRkczNnpjUW1YU3BXdGZ0QWtKS1NnUzZiWUZZUGhadkJOaWZudkVXQVJqd2JJb3NCaWhpc1hCVWxRc2ZzN0tiNmVVK3FIM3l2S2VyMlcwUkw5U2p6WklrdGxrM2tvOGc0MzJZVTh1NUNuVTdGOTVaUDE5OE1lWU9Fc3hDelpNTW80akowVElLa2xhK3dENGJUQW1CWW9HSUdjRWNnWkVaaXBSZC9lZ3hsekJTT3VZTXdWVEZpQ2dpVU9sdDR2KzhEK2paTHhCMlBxWUV3ZFRLZ1RZS210ZHZsL1lCRy9VSkFMQmJtcC9QMzNWcjBWeUV0NTZkZ3N6QzEwdkVRekoxUTZTbEV0bDlyTjY2SmFNT1NKcGsvRzkwVzFOakhiMmxDL0tLcWxXcTAyZWROZE8xTi9jbTJjVlNieWovN3NFUGl5V3I5dGFqY3RiZmdvOEdmcTlQVlBwVi9zUmNkOEhPL0RzSHpoR3d2amtid3ZqUHUxbVQxNi9TandWZFc0NytrM1FYRDErZkNTOUR4YVFZMm5VaXlOSjZWWUdway9JL21yY2NMYitmZXhOSEsvUi9MSHpzcFQ5NnhwUHlEMmlpM2l3SG5BempyODlQdzR4REIxWmh4aW1Eb1lEakJNSHdLSEdLWTIvQ0dHbTMyZHNQSWRaK1VyWGxaNStTVXZLN3o4VmhLU3NNS2VEaCtaY0FkT3Z5N1g1WHBsbzkxYnBsNGhXUTh0blpCRDVyZ3lnMElzYnRUc05HQTNoMmhRVERkMzFja3FjSVUrWHAzQ2tRQlJkcVB3Vmk0SmZMd1ord1VsRkxuREpCM0NoRDBEck1pTmxHKzVnS3hsNGQ4ejloMy94bjRzaHI5M2c3QmNGSW9naERKdkk0cms5d0d6WjYwUE95WlBpRTh4OFpqUmNmUUd5KzRZSHdVN2loY3JML0xFaHRaODVTMmdHbkdVai9zVGVjYnJwMXYxWERMbjhVZU9sUlhST3Q0TWI5NEhXUmROSFpHYzV5emtPR0k1ZmhpSlVKZzJsT084Q1kxRlhLR0pnNU0rL0FQdnQzQ1dld29BQUE9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["asin"],"name":[1],"type":["chr"],"align":["left"]},{"label":["brand"],"name":[2],"type":["chr"],"align":["left"]},{"label":["title"],"name":[3],"type":["chr"],"align":["left"]},{"label":["url"],"name":[4],"type":["chr"],"align":["left"]},{"label":["image"],"name":[5],"type":["chr"],"align":["left"]},{"label":["rating"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["reviewUrl"],"name":[7],"type":["chr"],"align":["left"]},{"label":["totalReviews"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["prices"],"name":[9],"type":["chr"],"align":["left"]}],"data":[{"1":"B0000SX2UC","2":"Nokia","3":"Dual-Band / Tri-Mode Sprint PCS Phone w/ Voice Activated Dialing & Bright White Backlit Screen","4":"https://www.amazon.com/Dual-Band-Tri-Mode-Activated-Dialing-Backlit/dp/B0000SX2UC","5":"https://m.media-amazon.com/images/I/2143EBQ210L._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"3.0","7":"https://www.amazon.com/product-reviews/B0000SX2UC","8":"14","9":"NA"},{"1":"B0009N5L7K","2":"Motorola","3":"Motorola I265 phone","4":"https://www.amazon.com/Motorola-i265-I265-phone/dp/B0009N5L7K","5":"https://m.media-amazon.com/images/I/419WBAVDARL._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"2.9","7":"https://www.amazon.com/product-reviews/B0009N5L7K","8":"7","9":"$49.95"},{"1":"B000SKTZ0S","2":"Motorola","3":"MOTOROLA C168i AT&T CINGULAR PREPAID GOPHONE CELL PHONE","4":"https://www.amazon.com/MOTOROLA-C168i-CINGULAR-PREPAID-GOPHONE/dp/B000SKTZ0S","5":"https://m.media-amazon.com/images/I/71b+q3ydkIS._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"2.6","7":"https://www.amazon.com/product-reviews/B000SKTZ0S","8":"22","9":"NA"},{"1":"B00198M12M","2":"Nokia","3":"Nokia 6500 Slide Black/silver Unlocked Cell Phone","4":"https://www.amazon.com/Nokia-6500-Slide-silver-Unlocked/dp/B00198M12M","5":"https://m.media-amazon.com/images/I/41ss4HpLkLL._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"2.4","7":"https://www.amazon.com/product-reviews/B00198M12M","8":"5","9":"NA"},{"1":"B001AO4OUC","2":"Motorola","3":"Motorola i335 Cell Phone Boost Mobile","4":"https://www.amazon.com/Motorola-i335-Phone-Boost-Mobile/dp/B001AO4OUC","5":"https://m.media-amazon.com/images/I/710UO8gdT+L._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"3.3","7":"https://www.amazon.com/product-reviews/B001AO4OUC","8":"21","9":"NA"},{"1":"B001DCJAJG","2":"Motorola","3":"Motorola V365 no contract cellular phone AT&T","4":"https://www.amazon.com/Motorola-V365-contract-cellular-phone/dp/B001DCJAJG","5":"https://m.media-amazon.com/images/I/61LYNCVrrKL._AC_UY218_SEARCH213888_FMwebp_QL75_.jpg","6":"3.2","7":"https://www.amazon.com/product-reviews/B001DCJAJG","8":"12","9":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[9]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShtb2JpbGVfZGF0YSlcbmBgYCJ9 -->
-<pre class="r"><code>summary(mobile_data)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICBhc2luICAgICAgICAgICAgICBicmFuZCAgICAgICAgICAgICAgdGl0bGUgICAgICAgICAgICAgICB1cmwgICAgICAgICAgICAgICBpbWFnZSAgICAgICAgICAgICAgIHJhdGluZyAgICAgICByZXZpZXdVcmwgICAgICAgIFxuIExlbmd0aDo3OTIgICAgICAgICBMZW5ndGg6NzkyICAgICAgICAgTGVuZ3RoOjc5MiAgICAgICAgIExlbmd0aDo3OTIgICAgICAgICBMZW5ndGg6NzkyICAgICAgICAgTWluLiAgIDoxLjAwMCAgIExlbmd0aDo3OTIgICAgICAgIFxuIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgICBDbGFzcyA6Y2hhcmFjdGVyICAgMXN0IFF1LjozLjIwMCAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTW9kZSAgOmNoYXJhY3RlciAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgTWVkaWFuIDozLjcwMCAgIE1vZGUgIDpjaGFyYWN0ZXIgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDozLjYwOCAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgM3JkIFF1Ljo0LjAwMCAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDo1LjAwMCAgICAgICAgICAgICAgICAgICAgIFxuICB0b3RhbFJldmlld3MgICAgICBwcmljZXMgICAgICAgICBcbiBNaW4uICAgOiAgMS4wICAgTGVuZ3RoOjc5MiAgICAgICAgXG4gMXN0IFF1LjogIDcuMCAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1lZGlhbiA6IDMxLjUgICBNb2RlICA6Y2hhcmFjdGVyICBcbiBNZWFuICAgOjEwNC4yICAgICAgICAgICAgICAgICAgICAgXG4gM3JkIFF1LjoxMjIuMiAgICAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6OTg0LjAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
-<pre><code>     asin              brand              title               url               image               rating       reviewUrl        
- Length:792         Length:792         Length:792         Length:792         Length:792         Min.   :1.000   Length:792        
- Class :character   Class :character   Class :character   Class :character   Class :character   1st Qu.:3.200   Class :character  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :3.700   Mode  :character  
-                                                                                                Mean   :3.608                     
-                                                                                                3rd Qu.:4.000                     
-                                                                                                Max.   :5.000                     
-  totalReviews      prices         
- Min.   :  1.0   Length:792        
- 1st Qu.:  7.0   Class :character  
- Median : 31.5   Mode  :character  
- Mean   :104.2                     
- 3rd Qu.:122.2                     
- Max.   :984.0                     </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -305,13 +249,6 @@ $ prices       &lt;chr&gt; NA, &quot;$49.95&quot;, NA, NA, NA, NA, &quot;$78.99&
   summarise(count = n()) %&gt;% 
   arrange(desc(count))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MTAsIm5jb2wiOjIsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiMTAgeCAyIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTExUlRVK0VNQkF0U01VbFdiT0pSK1BCeENza0d3OTZKZkh6NEVkRUl0Y3VJRGJiN1JBK290NzhBLzVkajRzRGRJeUI1TFh6NXZWTk84UFRSWExxSlI1amJJYzVGcTRjUThiajV5di9uREhIUm1JeGg4MzYvUVBsQXd6NjVBTGhHY0dOeEtadWRXRW9EOHRTNVliczNVRURGU2hCNGoyc0paSGRtemg4dWJ3bGRnMVEvQm1kQ1BRbktZa1VzSkdraEZFYzBkVVBPbjlVYlkzaGZIZ1JzNzV4enhFWllvazRRUndqamhDSDVwdzdhWTFyc2NscjA1Wk55VlVsZEVZa2hWWTNFOXVzZ3ZlQXJIMWQrd3VYcnV0K3B2VlRKV3FxVDBrdkU0MElYaXYwSTl0T0xDNlVqUVNOSnJ1Zk9aK1lyV3FTV0xTNmYwbm1wMit0WHZ2THMzRWNxSS9mM01UZXY5Z2U3N1E3VTR2VHZITmRTRTEvZ2l1eHlwVWgrOWp5MEhGUVZoSUhZbHJCYkIwMDBBZzY1NldnS0RNMHg3YS9TRktzMG1zQ0FBQT0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["count"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Samsung","2":"397"},{"1":"Apple","2":"101"},{"1":"Motorola","2":"100"},{"1":"Nokia","2":"49"},{"1":"HUAWEI","2":"36"},{"1":"Google","2":"33"},{"1":"Sony","2":"29"},{"1":"Xiaomi","2":"27"},{"1":"ASUS","2":"13"},{"1":"OnePlus","2":"7"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
