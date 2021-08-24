@@ -64,7 +64,7 @@ this is a result of those 1 ratings.
 # Qu.4 ----
 
 ```{r}
-# creating new column for z scores
+# creating new column for z scores. A z-score gives  an idea of how far from the mean a data point is. 
 samsung_mobile_data_scaled <- samsung_data %>% 
   mutate(z_rating = scale(rating))
 
@@ -155,3 +155,15 @@ Marginal improvement in the agreement between our data an expected values -
   100% / 97.9
 Therefore identifying and removing outliers yields a small improvement in achieving 
 agreement with expected values but was it worth it??? 
+
+```{r}
+qqnorm(samsung_data$rating)
+qqline(samsung_data$rating)
+
+```
+
+```{r}
+qqnorm(samsung_data_outliers_rm$rating)
+qqline(samsung_data_outliers_rm$rating)
+```
+
