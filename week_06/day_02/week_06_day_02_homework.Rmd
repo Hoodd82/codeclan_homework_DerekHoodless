@@ -1,0 +1,157 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(prob)
+library(tidyverse)
+library(janitor)
+library(MASS)
+```
+
+# Qu. 1 ----
+
+```{r}
+mobile_data <- read_csv("data/20190928-items.csv")
+
+glimpse(mobile_data)
+head(mobile_data)
+summary(mobile_data)
+```
+
+# Qu.2 ----
+
+```{r}
+mobile_data %>% 
+  group_by(brand) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+```
+
+# Qu.3 ----
+
+```{r}
+# cfilter to only show Samsung phones
+samsung_data <- mobile_data %>%
+  filter(brand == "Samsung")
+
+# calculate the mean and std deviation of Samsung phones
+samsung_phone_stats <- samsung_data %>% 
+  summarise(num = n(),
+            mean = mean(rating),
+            sd = sd(rating)
+            )
+
+# create histogram with a density scale, use stat_function to add the dnorm fn
+# to the histogram with the mean and std dev set to the calc'd values above
+samsung_data %>% 
+  ggplot(aes(x = rating)) +
+  geom_histogram(aes(y = ..density..), col = "white", bins = 25) +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = samsung_phone_stats$mean,
+      sd = samsung_phone_stats$sd
+    ), 
+    col = "red"
+  )
+```
+
+The normal distribution appears to be a good fit for our data, although it is a bit left skewed,
+this is a result of those 1 ratings. 
+
+# Qu.4 ----
+
+```{r}
+# creating new column for z scores
+samsung_mobile_data_scaled <- samsung_data %>% 
+  mutate(z_rating = scale(rating))
+
+# calc the proportion of observations within 1 sd
+samsung_mobile_data_scaled %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -1, right = 1)) %>% 
+  summarise(proportion = n() / nrow(samsung_data))
+
+# calc the proportion of observations within 2 sd
+samsung_mobile_data_scaled %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -2, right = 2)) %>% 
+  summarise(proportion = n() / nrow(samsung_data))
+
+# calc the proportion of observations within 3 sd
+samsung_mobile_data_scaled %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -3, right = 3)) %>% 
+  summarise(proportion = n() / nrow(samsung_data))
+```
+
+Calculated proportions of ratings:
+  1 sd - 79.3% compared to an expected value of 68% of observations within 1 sd
+  2 sd - 91.9% compared to an expected value of 95% of observation within 2 sd
+  3 sd - 97.9% compared to an expected value of >99% of observations with 3 sd
+  
+Suggests that our data does not exactly fit within a normal distribution but there 
+is a good fit, perhaps filtering out the outlier reviews would yield better agreement. 
+
+```{r}
+# expected distributions of observations for a normal distribution
+100 * (pnorm(q = 1) - pnorm(q = -1))
+100 * (pnorm(q = 2) - pnorm(q = -2))
+100 * (pnorm(q = 3) - pnorm(q = -3))
+```
+
+# re-do with the outliers removed...
+
+```{r}
+# remove outliers from dataset
+samsung_data_outliers_rm <- samsung_mobile_data_scaled %>% 
+  filter(between(z_rating, left = -3, right = 3))
+
+# calc new mean and sd
+samsung_stats_outliers_rm <- samsung_data_outliers_rm %>% 
+  summarise(num = n(),
+            mean = mean(rating),
+            sd = sd(rating)
+            )
+
+# create histogram with a density scale, use stat_function to add the dnorm fn
+# to the histogram with the mean and std dev set to the calc'd values above
+samsung_data_outliers_rm %>% 
+  ggplot(aes(x = rating)) +
+  geom_histogram(aes(y = ..density..), col = "white", bins = 25) +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = samsung_stats_outliers_rm$mean,
+      sd = samsung_stats_outliers_rm$sd
+    ), 
+    col = "red"
+  )
+
+samsung_data_scaled_rm <- samsung_data_outliers_rm  %>% 
+  mutate(z_rating = scale(rating))
+
+samsung_data_scaled_rm %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -1, right = 1)) %>% 
+  summarise(proportion = n() / nrow(samsung_data_outliers_rm))
+
+samsung_data_scaled_rm %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -2, right = 2)) %>% 
+  summarise(proportion = n() / nrow(samsung_data_outliers_rm))
+
+samsung_data_scaled_rm %>% 
+  dplyr::select(title, rating, z_rating) %>% 
+  filter(between(z_rating, left = -3, right = 3)) %>% 
+  summarise(proportion = n() / nrow(samsung_data_outliers_rm))
+```
+
+Marginal improvement in the agreement between our data an expected values -
+  72.7% / 79.3%
+  93% / 91.9%
+  100% / 97.9
+Therefore identifying and removing outliers yields a small improvement in achieving 
+agreement with expected values but was it worth it??? 
