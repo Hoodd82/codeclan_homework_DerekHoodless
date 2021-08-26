@@ -62,7 +62,7 @@ qb_monthly_sales %>%
 ```{r}
 qb_monthly_sales %>% 
   clean_names() %>% 
-  filter(cashflow != "Total Revenue" &
+  filter(cashflow != "Kwikbit Unit 1 Sales" &
            date >= "2019-01-01") %>% 
   ggplot() +
   aes(x = date, y = amount, colour = cashflow) +
@@ -70,7 +70,7 @@ qb_monthly_sales %>%
   labs(
     x = "\nDate",
     y = "Revenue\n",
-    title = "KwikBit Unit 1 2019 Sales and Costs",
+    title = "2019 Revenue and Costs",
     colour = "Cash Flow"
   ) +
   theme_bw() 
@@ -135,16 +135,16 @@ device_data %>%
   ) +
   theme_bw()
 
-# device_data %>%
-#   ggplot() +
-#   aes(x = hours, y = step_count, group = device, colour = id) +
-#   geom_line() +
-#   facet_grid(~ id) +
-#   labs(
-#     x = "Setp Count\n",
-#     y = "\ntime",
-#     title = "Step Count by Device"
-#   )
+device_data %>%
+  ggplot() +
+  aes(x = hours, y = step_count, group = device, colour = id) +
+  geom_line() +
+  facet_grid(~ id) +
+  labs(
+    x = "Setp Count\n",
+    y = "\ntime",
+    title = "Step Count by Device"
+  )
 ```
 
 

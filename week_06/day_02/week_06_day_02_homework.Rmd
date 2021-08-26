@@ -47,7 +47,7 @@ samsung_phone_stats <- samsung_data %>%
 # to the histogram with the mean and std dev set to the calc'd values above
 samsung_data %>% 
   ggplot(aes(x = rating)) +
-  geom_histogram(aes(y = ..density..), col = "white", bins = 25) +
+  geom_histogram(aes(y = ..density..), col = "white", bins = 35) +
   stat_function(
     fun = dnorm,
     args = list(
@@ -89,8 +89,8 @@ samsung_mobile_data_scaled %>%
 
 Calculated proportions of ratings:
   1 sd - 79.3% compared to an expected value of 68% of observations within 1 sd
-  2 sd - 91.9% compared to an expected value of 95% of observation within 2 sd
-  3 sd - 97.9% compared to an expected value of >99% of observations with 3 sd
+  2 sd - 91.9% compared to an expected value of 95% of observations within 2 sd
+  3 sd - 97.9% compared to an expected value of >99% of observations within 3 sd
   
 Suggests that our data does not exactly fit within a normal distribution but there 
 is a good fit, perhaps filtering out the outlier reviews would yield better agreement. 
@@ -107,7 +107,7 @@ is a good fit, perhaps filtering out the outlier reviews would yield better agre
 ```{r}
 # remove outliers from dataset
 samsung_data_outliers_rm <- samsung_mobile_data_scaled %>% 
-  filter(between(z_rating, left = -3, right = 3))
+  filter(between(z_rating, left = -3, right = 35))
 
 # calc new mean and sd
 samsung_stats_outliers_rm <- samsung_data_outliers_rm %>% 
@@ -120,7 +120,7 @@ samsung_stats_outliers_rm <- samsung_data_outliers_rm %>%
 # to the histogram with the mean and std dev set to the calc'd values above
 samsung_data_outliers_rm %>% 
   ggplot(aes(x = rating)) +
-  geom_histogram(aes(y = ..density..), col = "white", bins = 25) +
+  geom_histogram(aes(y = ..density..), col = "white", bins = 35) +
   stat_function(
     fun = dnorm,
     args = list(
