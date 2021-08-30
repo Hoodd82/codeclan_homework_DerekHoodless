@@ -55,7 +55,7 @@ null_distribution %>%
 # we are comparing averages of two different samples; omnivores and carnivores therefore this is a two sided test
 
 # H0 : uomni - uherbi = 0
-# H1 : uomni - uherbi != 0
+# H1 : uomni - uherbi > 0
 
 # significance level, alpha = 0.05
 
@@ -78,11 +78,11 @@ observed_stat
 # plot null_distribution
 null_distribution %>% 
   visualise(bins = 30) +
-  shade_p_value(obs_stat = observed_stat, direction = "both")
+  shade_p_value(obs_stat = observed_stat, direction = "right")
 
 # find the p value
 null_distribution %>% 
-  get_p_value(obs_stat = observed_stat, direction = "both")
+  get_p_value(obs_stat = observed_stat, direction = "right")
 
 # p value is less that 0.05 so we can reject the null hypothesis
 ```
@@ -92,25 +92,23 @@ null_distribution %>%
 ```{r}
 # one sample test for proportion
 
-# H0 : πdom < 5
+# H0 : πdom = 5
 # Ha : πdom > 5
 
 # create is_domesticated variable & remove NAs
 mammal_data_dom <- mammal_data %>% 
-  mutate(is_domesticated = ifelse(conservation == "domesticated", 
-                                  "domesticated", "not domesticated")
-  ) %>% 
+  mutate(is_domesticated = conservation == "domesticated") %>% 
   filter(!is.na(conservation))
 
 # calculate observed stat
 observed_stat <- mammal_data_dom %>% 
-  specify(response = is_domesticated, success = "domesticated") %>% 
+  specify(response = is_domesticated, success = "TRUE") %>% 
   calculate(stat = "prop")
 observed_stat
 
 # create null distribution
 null_distribution <- mammal_data_dom %>% 
-  specify(response = is_domesticated, success = "domesticated") %>% 
+  specify(response = is_domesticated, success = "TRUE") %>% 
   hypothesise(null = "point", p = 0.05) %>% 
   generate(reps = 10000, type = "draw") %>% 
   calculate(stat = "prop")
@@ -118,7 +116,7 @@ null_distribution <- mammal_data_dom %>%
 
 # plot null distribution
 null_distribution %>% 
-  visualise(bins = 30) +
+  visualise() +
   shade_p_value(obs_stat = observed_stat, direction = "right")
 
 # get p value
@@ -135,7 +133,7 @@ p_value
 
 # Section 1.2
 
-Qu2 1 - Fail to reject the null hypothesis
+Qu. 1 - Fail to reject the null hypothesis
 Qu. 2 - Reject the null hypothesis
 Qu. 3 - Fail to reject the null hypothesis
 
