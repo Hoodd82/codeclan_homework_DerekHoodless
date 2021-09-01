@@ -1,0 +1,96 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(viridis)
+```
+
+```{r}
+loans_data <- read_csv("data/loans.csv")
+```
+
+# Qu. 1
+
+There is an obvious relationship between the loan grade and the amount interest paid, suggesting
+that grade A has the least risk and grade G the most risk.
+
+```{r}
+loans_data %>% 
+  ggplot() +
+  aes(x = loan_amnt, y = int_rate, colour = grade) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~ grade) +
+  labs(
+    x = "Loan Amount ($)",
+    y = "Interest Rate (%)",
+    title = "Interest Rate vs. Loan Amount",
+    subtitle = "By loan grade",
+    colour = "Loan Grade"
+  ) +
+  theme_bw()
+```
+
+# Qu. 2
+
+```{r}
+mean_loan_amnt <- loans_data %>%
+  group_by(grade, int_rate) %>% 
+  summarise(
+    mean_loan_amnt = mean(loan_amnt),
+    .groups = "drop"
+  )
+mean_loan_amnt
+  
+mean_loan_amnt %>%   
+  ggplot() +
+  aes(x = grade, y = mean_loan_amnt, fill = int_rate) +
+  geom_bar(stat = "identity") +
+  labs(
+    x = "\nLoan Grade",
+    y = "\nMean Loan Amount ($)\n",
+    title = "Mean Loan Amount vs. Loan Grade",
+    subtitle = "By Interest Rate",
+    fill = "Interest Rate"
+  ) +
+  theme_bw() +
+  scale_fill_continuous(type = "viridis")
+```
+
+# Qu. 3
+
+```{r}
+loans_data %>% 
+  ggplot() +
+  aes(x = loan_amnt, y = int_rate) +
+  geom_point(colour = "brown", alpha = 0.5) +
+  facet_grid(grade ~ purpose) +
+  labs(
+    x = "\nLoan Amount ($)",
+    y = "Interest Rate (%)",
+    title = "Interest Rate vs. Loan Amount",
+    subtitle = "By loan grade and purpose"
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r}
+loans_data %>% 
+  ggplot() +
+  aes(x = loan_amnt, y = int_rate, colour = grade) +
+  geom_line(alpha = 0.5) +
+  facet_wrap(~ purpose) +
+  labs(
+    x = "\nLoan Amount ($)",
+    y = "Interest Rate (%)\n",
+    title = "Interest Rate vs. Loan Amount",
+    subtitle = "By loan grade and purpose",
+    colour = "Loan Grade"
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
