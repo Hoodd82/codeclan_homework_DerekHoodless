@@ -36,27 +36,30 @@ loans_data %>%
 # Qu. 2
 
 ```{r}
+library(viridis)
+
 mean_loan_amnt <- loans_data %>%
   group_by(grade, int_rate) %>% 
   summarise(
     mean_loan_amnt = mean(loan_amnt),
+    mean_int_rate = mean(int_rate),
     .groups = "drop"
   )
-mean_loan_amnt
   
 mean_loan_amnt %>%   
   ggplot() +
-  aes(x = grade, y = mean_loan_amnt, fill = int_rate) +
+  aes(x = grade, y = mean_loan_amnt, fill = mean_int_rate) +
   geom_bar(stat = "identity") +
   labs(
     x = "\nLoan Grade",
     y = "\nMean Loan Amount ($)\n",
     title = "Mean Loan Amount vs. Loan Grade",
-    subtitle = "By Interest Rate",
-    fill = "Interest Rate"
+    subtitle = "By mean interest rate",
+    fill = "Mean\nInterest Rate"
   ) +
   theme_bw() +
-  scale_fill_continuous(type = "viridis")
+  scale_fill_continuous(type = "viridis") +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))
 ```
 
 # Qu. 3
