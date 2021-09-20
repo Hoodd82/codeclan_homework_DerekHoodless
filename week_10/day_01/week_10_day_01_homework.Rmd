@@ -1,0 +1,130 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(modelr)
+library(broom)
+library(ggfortify)
+library(janitor)
+```
+
+# MVP ----
+
+```{r}
+# load in dataset
+pm_data <- read_csv("data/project_management.csv")
+```
+
+```{r}
+# plot estimated_length versus actual_length
+pm_data %>% 
+  ggplot() +
+  aes(x = estimated_length, y = actual_length) +
+  geom_point()
+```
+
+```{r}
+# calculate the correlation coefficient
+pm_data %>% 
+  summarise(cor(estimated_length, actual_length))
+
+# the variables are very strongly positively correlated.
+
+# cor(x, y) calculates the r value which tells you whether the variables are correlated, whether positively or negatively, and how weak or strong the correlation is, if at all
+```
+
+```{r}
+# perform a simple linear regression using actual and estimated length variables
+model <- lm(formula = actual_length ~ estimated_length, data = pm_data)
+
+summary(model)
+```
+
+```{r}
+tidy_output <- clean_names(tidy(model))
+tidy_output
+```
+
+```{r}
+# interpret the regression coefficient, and the r^2 value
+
+# a 1 week increase in the estimated_length variable changes the outcome/response variable by 1.22 weeks (b1)
+
+# ~64% variation in the actual_length is explained by variation in the estimated_length (explanatory variable)
+```
+
+```{r}
+# check the regression diagnostics
+autoplot(model)
+
+# residual vs fitted - the blue smoothed line and residuals are round about 0
+# normal QQ - majority of the residuals fall on the straight line, suggests the distribution is normal
+# scale location - the residuals occur in a fixed band around a fairly constant blue line
+```
+
+# EXT. ----
+
+```{r}
+plot(model)
+
+# residual vs leverage plots help to identify influential data points on the model. Outliers could be influential, but not always, some points in the normal range in the model could also be highly influential.
+# outlier - observation which has a large residual
+# leverage observations - observation which has a value of x that far away from the mean of x
+# influential observations - observations which change the slope of the line, or the fit of the model
+
+# which are outliers - 18, 31 & 5 have high residuals and leverage as they lie close to or outwith the dashed red lines (cook's distance). 
+# which are influential - 5 and 31(?) as both have high leverage
+```
+```{r}
+pm_data %>% 
+  ggplot() +
+  aes(x = estimated_length, y = actual_length) +
+  geom_point() +
+  geom_text(aes(label = 1:nrow(pm_data)), nudge_x = 0.3)
+```
+
+```{r}
+plot(model, which = 4)
+
+# point 5 has a cook's distance greater than 1 and is therefore influential
+```
+
+```{r}
+# remove observation 18
+pm_data_rm_18 <- pm_data[-c(18),]
+
+# rerun linear model with new dataset
+model_rm_18 <- lm(formula = actual_length ~ estimated_length, data = pm_data_rm_18)
+model_rm_18
+
+# compare with original dataset
+model
+
+# intercept increased and estimated_length decreased with removal of observation 18, it doesn't appear from this that observation 18 is influential
+
+plot(model_rm_18)
+
+plot(model_rm_18, which = 4)
+```
+
+```{r}
+# remove observation 5
+pm_data_rm_5 <- pm_data[-c(5),]
+
+# rerun linear model with new dataset
+model_rm_5 <- lm(formula = actual_length ~ estimated_length, data = pm_data_rm_5)
+model_rm_5
+
+# compare with original dataset
+model
+
+# intercept increased significantly and estimated_length decreased with removal of observation 5, suggesting observation 5 is influential!
+
+plot(model_rm_5)
+
+plot(model_rm_5, which = 4)
+```
+
