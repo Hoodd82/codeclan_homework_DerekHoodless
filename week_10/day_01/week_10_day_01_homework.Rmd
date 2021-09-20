@@ -53,7 +53,7 @@ tidy_output
 
 # a 1 week increase in the estimated_length variable changes the outcome/response variable by 1.22 weeks (b1)
 
-# ~64% variation in the actual_length is explained by variation in the estimated_length (explanatory variable)
+# ~64% variation in the actual_length by explained by variations in the estimated_length (explanatory variable)
 ```
 
 ```{r}
@@ -71,11 +71,11 @@ autoplot(model)
 plot(model)
 
 # residual vs leverage plots help to identify influential data points on the model. Outliers could be influential, but not always, some points in the normal range in the model could also be highly influential.
-# outlier - observation which has a large residual
+
 # leverage observations - observation which has a value of x that far away from the mean of x
 # influential observations - observations which change the slope of the line, or the fit of the model
 
-# which are outliers - 18, 31 & 5 have high residuals and leverage as they lie close to or outwith the dashed red lines (cook's distance). 
+# which are outliers - 18, 31 & 5 have potentially high residuals and leverage as they lie close to or outwith the dashed red lines (cook's distance). 
 # which are influential - 5 and 31(?) as both have high leverage
 ```
 ```{r}
@@ -83,7 +83,7 @@ pm_data %>%
   ggplot() +
   aes(x = estimated_length, y = actual_length) +
   geom_point() +
-  geom_text(aes(label = 1:nrow(pm_data)), nudge_x = 0.3)
+  geom_text(aes(label = 1:nrow(pm_data)), nudge_x = 0.3) +
 ```
 
 ```{r}
@@ -114,12 +114,27 @@ plot(model_rm_18, which = 4)
 # remove observation 5
 pm_data_rm_5 <- pm_data[-c(5),]
 
-# rerun linear model with new dataset
+# rerun linear model with new dataset. y outcome variable, x explanatory variable
 model_rm_5 <- lm(formula = actual_length ~ estimated_length, data = pm_data_rm_5)
 model_rm_5
 
 # compare with original dataset
 model
+
+pm_data %>% 
+  ggplot() +
+  aes(x = estimated_length, y = actual_length) +
+  geom_point() +
+  geom_abline(
+    intercept = model_rm_5$coefficients[1],
+    slope = model_rm_5$coefficients[2],
+    col = "red"
+  ) +
+  geom_abline(
+    intercept = model_rm_18$coefficients[1],
+    slope = model_rm_18$coefficients[2],
+    col = "green"
+  )
 
 # intercept increased significantly and estimated_length decreased with removal of observation 5, suggesting observation 5 is influential!
 
