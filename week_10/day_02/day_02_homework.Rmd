@@ -26,7 +26,7 @@ summary(diamonds)
 ```{r}
 # Use ggpairs() to investigate correlations between these four variables.
 diamonds_trim <- diamonds %>% 
-  select(carat, x, y, z) # keep only these variables to reduce the amount of ggpairs plots
+  select(carat, x, y, z)  # keep only these variables to reduce the amount of ggpairs plots
 
 ggpairs(diamonds_trim)
 
@@ -58,11 +58,14 @@ diamonds_trim2 %>%
 # MVP 5
 
 ```{r}
+# How many dummy variables do you expect for each of them?
 diamonds_trim2_2 <- diamonds_trim2 %>% 
   dummy_cols(select_columns = "cut", remove_first_dummy = TRUE, remove_selected_columns = TRUE) %>% 
   dummy_cols(select_columns = "clarity", remove_first_dummy = TRUE, remove_selected_columns = TRUE) %>% 
   dummy_cols(select_columns = "color", remove_first_dummy = TRUE, remove_selected_columns = TRUE)
 diamonds_trim2_2
+
+# 17?
 ```
 
 # MVP 6
