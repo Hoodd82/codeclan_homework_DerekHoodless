@@ -1,0 +1,137 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(mosaicData)
+library(GGally)
+library(ggfortify)
+library(mosaic)
+library(fastDummies)
+```
+
+# MVP 1
+
+```{r}
+diamonds <- read_csv("data/diamonds.csv")
+
+summary(diamonds)
+```
+
+# MVP 2
+
+```{r}
+# Use ggpairs() to investigate correlations between these four variables.
+diamonds_trim <- diamonds %>% 
+  select(carat, x, y, z) # keep only these variables to reduce the amount of ggpairs plots
+
+ggpairs(diamonds_trim)
+
+# there appears to be very strong correlations between carat, x, y & z (length, width & depth)
+```
+# MVP 3
+
+```{r}
+# drop x, y & z from the dataset
+diamonds_trim2 <- diamonds %>% 
+  select(-c("x", "y", "z"))
+```
+
+# MVP 4
+
+```{r}
+# Use ggpairs() to investigate correlations between price and the predictors
+ggpairs(diamonds_trim2)
+
+diamonds_trim2 %>% 
+  ggplot() +
+  aes(x = carat, y = price) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)
+
+# there appears to be a linear relationship between carat and price - as carat increases the price increases
+```
+
+# MVP 5
+
+```{r}
+diamonds_trim2_2 <- diamonds_trim2 %>% 
+  dummy_cols(select_columns = "cut", remove_first_dummy = TRUE, remove_selected_columns = TRUE) %>% 
+  dummy_cols(select_columns = "clarity", remove_first_dummy = TRUE, remove_selected_columns = TRUE) %>% 
+  dummy_cols(select_columns = "color", remove_first_dummy = TRUE, remove_selected_columns = TRUE)
+diamonds_trim2_2
+```
+
+# MVP 6
+
+```{r}
+# start with simple linear regression. Regress price on carat and check the regression diagnostics.
+model <- lm(price ~ carat, data = diamonds_trim2)
+
+summary(model)
+# price = -2256.38 + 7756.43 * carat
+# a one carat diamond will cost 5500.05
+# the p-value of the F statistic is < 2.2e-16 which means that carat (predictor variable) is statistically significant to the price (outcome variable)
+# RSE: represents roughly the average difference between the observed outcome values and the predicted values by the model.
+error <- 1549 / mean(diamonds_trim2$price)
+error
+# 39%
+# R2: represents the proportion of variation in the outcome variable that can be explained by the model predictor values.
+# 0.849 this is good
+
+autoplot(model)
+
+# residuals vs fitted: used to check for linear relationship assumptions. A horizontal line, without distinct patterns is an indicator for a linear relationship.
+# normal QQ: used to examine whether residuals are normally distributed, indicated by the residuals following the straight dashed lines.
+# scale-location: or spread location. Used to check the homogenity of variance of the residuals. Horizontal line with equally spread points is a good indicator or homoscedasticity.
+# residuals vs leverage: used to identify influential cases, that is extreme values that might influence the regression results when include or excluded from the analysis.
+
+plot(model, 1)
+# ideally the residual plot should show no fitted pattern - the red line should be approximately horizontal at zero and the presence of a pattern may indicate a problem with some aspect of the model.
+# is there a pattern - hard to tell!
+
+plot(model, 2)
+# expectation of a normal distribution would be that the residuals should follow the straight dashed line.
+# the points only follow a portion of the line therefore normality cannot be assumed.
+
+plot(model, 3)
+# we would like to see a horizontal line with an equal spread of points.
+# in our example this is not the case. The variability of the residual points increase with price, suggesting non-constant variance in the residuals error, or heteroscedasticity.
+
+plot(model, 5)
+# an outlier is a point which has an extreme outlier variable value, its presence may affect the interpretation of the model because it increases the residual std error.
+# points 25999, 27631 & 27416 look like possible outliers.
+# none of the points are outside the cook's distance lines and are therefore not likely to be influential on the regression results.
+
+plot(model, 4)
+# confirmation that the points are not infuential - i.e if they were removed from the model the regression results would be altered.
+```
+
+# MVP 7
+
+```{r}
+# Add another predictor of your choice. Check your assumptions, diagnostics, and interpret the model
+model2 <- lm(price ~ carat + cut, data = diamonds_trim2)
+
+summary(model2)
+# p-value is 2.2e-16 meaning that cut is statistically significant to the outcome variable, price.
+# RSE: reduced to 1511 from 1549
+# R2: increased to 0.8565 from 0.84393, therefore increased the proportion of variation in the outcome variable that can be explained by the model predictor values.
+
+autoplot(model2)
+# looks the same as the above diagnostics
+```
+
+# EXT 1
+
+```{r}
+model3 <- lm(price ~ log(carat), data = diamonds_trim2)
+
+summary(model3)
+
+# not sure
+```
+
