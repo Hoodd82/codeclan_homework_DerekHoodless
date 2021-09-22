@@ -1,0 +1,175 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(modelr)
+library(GGally)
+library(ggfortify)
+library(relaimpo)
+library(lm.beta)
+```
+
+# MVP 1
+
+```{r}
+# read in dataset
+house_data <- read_csv("data/kc_house_data.csv") 
+
+# clean dataset
+house_tidy <- house_data %>% 
+  dplyr::select(-c(date, id, sqft_living15, sqft_lot15, zipcode)) %>% 
+  mutate(yr_renovated = ifelse(yr_renovated == 0, FALSE, TRUE)) %>% 
+  mutate(waterfront = ifelse(waterfront == 0, FALSE, TRUE)) %>% 
+  rename("renovated" = "yr_renovated") %>% 
+  mutate(grade = ifelse(grade <= 3, "poor", ifelse(grade <= 7, "average", "good")))
+  
+```
+
+# MVP 2
+
+```{r}
+# use alias() to check for any variables that lead to an alias
+alias(lm(price ~ ., data = house_tidy))
+```
+
+```{r}
+# remove sqft_basement
+house_tidy <- house_tidy %>% 
+  dplyr::select(-sqft_basement)
+
+# rerun alias to check that there are now no aliases
+alias(lm(price ~ ., data = house_tidy))
+```
+
+# MVP 3
+
+```{r}
+house_tidy_numeric <- house_tidy %>%
+  select_if(is.numeric)
+
+house_tidy_nonnumeric <- house_tidy %>%
+  select_if(function(x) !is.numeric(x))
+
+house_tidy_nonnumeric$price <- house_tidy$price
+
+ggpairs(house_tidy_numeric)
+ggpairs(house_tidy_nonnumeric)
+```
+# 1st Predictor 
+
+```{r}
+# first model price ~ sqft_living
+mod_1 <- lm(price ~ sqft_living, data = house_tidy)
+
+summary(mod_1)
+
+par(mfrow = c(2, 2))
+plot(mod_1)
+```
+
+```{r}
+# second model price ~ sqft_above
+mod_2 <- lm(price ~ sqft_above, data = house_tidy)
+
+summary(mod_2)
+
+par(mfrow = c(2, 2))
+plot(mod_2)
+```
+sqft_living will be used as the first predictor since the r2 value is higher, 50% vs 36%, diagnostics for both models look ok-ish but not great!
+
+# Second predictor
+
+```{r}
+prestige_remaining_resid <- house_tidy %>%
+  add_residuals(mod_1) %>%
+  dplyr::select(-c("price", "sqft_living"))
+
+prestige_remaining_resid %>%
+  ggpairs(aes(colour = waterfront, alpha = 0.5))
+```
+
+```{r}
+mod_3 <- lm(price ~ sqft_living + yr_built, data = house_tidy)
+
+summary(mod_3)
+
+par(mfrow = c(2, 2))
+plot(mod_3)
+```
+
+```{r}
+mod_4 <- lm(price ~ sqft_living + lat, data = house_tidy)
+
+summary(mod_4)
+
+par(mfrow = c(2, 2))
+plot(mod_4)
+```
+Second predictor will be lat as it gives a slight higher r2 value, 56% vs 52% for yr_built. The diagnostics are almost identical.
+
+# Third predictor
+
+```{r}
+prestige_remaining_resid <- house_tidy %>%
+  add_residuals(mod_4) %>%
+  dplyr::select(-c("price", "sqft_living", "lat"))
+
+prestige_remaining_resid %>%
+  ggpairs(aes(colour = waterfront, alpha = 0.5))
+```
+
+```{r}
+mod_5 <- lm(price ~ sqft_living + lat + view, data = house_tidy)
+
+summary(mod_5)
+
+par(mfrow = c(2, 2))
+plot(mod_5)
+```
+
+```{r}
+mod_6 <- lm(price ~ sqft_living + lat + yr_built, data = house_tidy)
+
+summary(mod_6)
+
+par(mfrow = c(2, 2))
+plot(mod_6)
+```
+For the third predictor we will choose view over lat as it provide the higher r2 value.
+
+# Forth predictor
+
+```{r}
+house_resid <- house_tidy %>% 
+  add_residuals(mod_5) %>% 
+  dplyr::select(-price)
+
+coplot(resid ~ sqft_living | lat, 
+       panel = function(x, y, ...){
+         points(x, y)
+         abline(lm(y ~ x), col = "blue")
+       }, 
+       data = house_resid, 
+       columns = 6)
+
+coplot(resid ~ lat | view, 
+       panel = function(x, y, ...){
+         points(x, y)
+         abline(lm(y ~ x), col = "blue")
+       }, 
+       data = house_resid, 
+       columns = 6)
+
+coplot(resid ~ sqft_living | view, 
+       panel = function(x, y, ...){
+         points(x, y)
+         abline(lm(y ~ x), col = "blue")
+       }, 
+       data = house_resid, 
+       columns = 6)
+```
+
