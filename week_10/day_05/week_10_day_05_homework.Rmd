@@ -1,0 +1,152 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(leaps)
+library(janitor)
+library(e1071)
+library(ggfortify)
+library(GGally)
+
+avocado <- read_csv("data/avocado.csv") %>% 
+  clean_names()
+
+  # mutate(type = factor(type, c(0, 1), labels = c("conventional", "organic")))
+
+# convert catagoricals to factors
+avocado$type <- factor(avocado$type)
+
+avocado$year <- factor(avocado$year)
+
+avocado$region <- factor(avocado$region)
+```
+
+```{r}
+# let's look at the distribution of average_price
+avocado %>% 
+  ggplot() +
+  aes(x = average_price) %>% 
+  geom_histogram(bins = 35, colour = "white")
+
+skewness(avocado$average_price)
+# distribution of price has good normality with a moderate right skew
+```
+
+```{r}
+# how does average_price vary with region
+avocado %>% 
+  group_by(region) %>% 
+  summarise(mean_price = mean(average_price)) %>% 
+  ggplot() +
+  aes(x = reorder(region, mean_price), y = mean_price) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+# average_price does change with region...need to check if region is statistically significant later
+```
+
+```{r}
+# create test and train datasets
+n_data <- nrow(avocado) # count number of rows in our dataset
+
+ # create a test index
+test_index <- sample(1:n_data, size = n_data * 0.2)
+
+# use test_index to create test and train datasets
+test <- slice(avocado, test_index)
+train <- slice(avocado, -test_index)
+```
+
+```{r}
+avocado_trimmed <- avocado %>% 
+  select(-c(region, date, x1))
+
+ggpairs(avocado_trimmed)
+```
+# manual model building 
+
+According to the ggpairs plot x4046 is most correlated with average_price, then total_volume, x4770, etc. Type is also looking interesting so I will begin with type then the different avocado type and so on.
+
+```{r}
+model_1 <- lm(average_price ~ type, data = avocado_trimmed)
+summary(model_1)
+```
+
+```{r}
+model_2 <- lm(average_price ~ x4046, data = avocado_trimmed)
+summary(model_2)
+```
+
+```{r}
+model_3 <- lm(average_price ~ total_volume, data = avocado_trimmed)
+summary(model_3)
+```
+
+```{r}
+model_4 <- lm(average_price ~ x4225, data = avocado_trimmed)
+summary(model_4)
+```
+
+```{r}
+model_6 <- lm(average_price ~ x4770, data = avocado_trimmed)
+summary(model_6)
+```
+
+```{r}
+model_7 <- lm(average_price ~ total_bags, data = avocado_trimmed)
+summary(model_7)
+```
+
+```{r}
+model_8 <- lm(average_price ~ year, data = avocado_trimmed)
+summary(model_8)
+```
+So it is type which provides the highest r2 value ~38%, which is to say that 38% of the variation in average price of avocados can be explained by variation in type, i.e. whether an avocado is organic or not - this makes sense!
+
+The remaining predictors do not account for much variation in average_price
+
+# auto model development
+
+```{r}
+auto_exhaustive_1 <- regsubsets(average_price ~ ., data = avocado_trimmed, method = "exhaustive")
+sum_auto_exhaustive <- summary(auto_exhaustive_1)
+sum_auto_exhaustive
+```
+
+```{r}
+plot(auto_exhaustive_1, scale = "adjr2")
+plot(auto_exhaustive_1, scale = "bic")
+plot(sum_auto_exhaustive$rsq, type = "b")
+plot(sum_auto_exhaustive$bic, type = "b")
+```
+The model with highest adjusted r2 value is one containing x4046 + x4225 + x4770 + large_bags + x_large_bags + type + year but we are not testing for statistical significance. To do this a model will be build using these variables plus a model which contains region from the original avocado dataset, then perform an analysis of variance test to see which model is best.
+
+```{r}
+model_1a <- lm(average_price ~ x4046 + x4225 + x4770 + large_bags + x_large_bags + type + year, data = avocado_trimmed)
+summary(model_1a)
+```
+
+```{r}
+model_2a <- lm(average_price ~ x4046 + x4225 + x4770 + large_bags + x_large_bags + type + year + region, data = avocado)
+summary(model_2a)
+```
+
+```{r}
+anova(model_1a, model_2a)
+```
+The model without region has an r2 value of 0.43 but the model including region has r2 value of 0.58, and the anova test tells us that the model with region is significantly better at predicting variance in average_price than the model without.
+
+```{r}
+par(mfrow = c(2, 2))
+plot(model_2a)
+
+plot(model_2a, 4)
+```
+The diagnostics look good! 
+
+- The residual vs fitted plot doesn't show any pattern in the residuals and the red line is horizontal and hovering around zero, which indicates a linear relationship exists.
+- The qqplot indicates that there is some level of normality in the distribution of the residuals, however there is evidence of the residuals being more distributed around zero.
+- The scale location shows homogeneity of variance of the residuals - indicated by a horizontal line with the points spread evenly.
+- The residual vs leverage plot shows us that there are potentially outliers in our data however none appear to be influential.
