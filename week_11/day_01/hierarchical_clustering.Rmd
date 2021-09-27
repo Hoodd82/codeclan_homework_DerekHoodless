@@ -1,0 +1,81 @@
+---
+title: "Hierarchical Clustering"
+output: html_notebook
+---
+
+
+```{r}
+# load in the required libraries
+library(tidyverse)
+library(cluster)
+library(factoextra)
+library(dendextend)
+```
+
+# Clustering 
+
+Clustering is a technique that groups similar objects such that the objects in the same group are more similar to each other than the objects in the other groups.
+
+This differs from classification which uses predefined classes to which objects are assigned, while clustering identifies similarities between the objects, which it then groups, or clusters, based on their similar characteristics.
+
+Clustering is an unsupervised machine learning task. Meaning you give an algorithm data with no labels and let it find any groupings in the data.
+
+There are many clustering methods:
+- density based
+- distribution based
+- centroid based
+- k-means clustering
+- hierarchical clustering
+
+# How is it used?
+
+- Organise, or provide structure, to large unstructured datasets
+- Can be a useful initial step in any data analysis situation 
+- Consumer data classification
+- Behavioural segmentation in a marketing context
+- Recommendation systems i.e. Netflix
+- Fraud detection system in finance
+
+# Hierarchical Clustering
+
+Hierarchical clustering involves creating clusters that have a predetermined ordering.
+
+Can be divided into two types:
+- Agglomerative method: works in a bottom-up manner. Each object is considered a single element cluster, or leaf. The algorithm then clusters together the two most similar clusters, and the process iterated until all points are a member of just one single big cluster.
+- Divisive method: is the inverse order of the agglomerative method and works in a top-down manner in which all of the observations are assigned to a single cluster and then the cluster divided to the two least similar clusters. This is repeated until each object is in their own cluster.
+
+# Advantages & disadvantages
+
+Advantages:
+- No need to specify the number of clusters
+- Easy to implement and interpret the results
+- The main output, the dendrogram, is appealing to users
+
+Disadvantages:
+- Does not work well with missing data
+- Doesn't suit very large datasets
+- Sensitive to outliers
+
+# An example in R (Agglomerative Method)
+
+```{r}
+# remove all NAs
+df <- USArrests
+
+# remove any missing data
+# using scale() transform the variables such that they have mean zero and standard deviation one.
+df_clean <- df %>% 
+  filter(!is.na(.)) %>% 
+  scale()
+
+# calculate maximum distance between each row in the dataset
+d <- dist(df, method = "euclidean")
+
+# hierarchical clustering using Complete Linkage
+hc1 <- hclust(d, method = "complete" )
+
+# plot the dendrogram
+plot(hc1, cex = 0.6, hang = -1)
+```
+
+
