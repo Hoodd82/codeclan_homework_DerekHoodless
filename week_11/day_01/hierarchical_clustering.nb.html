@@ -215,31 +215,27 @@ pre code {
 
 
 <!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBsb2FkIGluIHRoZSByZXF1aXJlZCBsaWJyYXJpZXNcbmxpYnJhcnkodGlkeXZlcnNlKVxubGlicmFyeShjbHVzdGVyKVxubGlicmFyeShmYWN0b2V4dHJhKVxubGlicmFyeShkZW5kZXh0ZW5kKVxuYGBgIn0= -->
-<pre class="r"><code># load in the required libraries
-library(tidyverse)
-library(cluster)
-library(factoextra)
-library(dendextend)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <div id="clustering" class="section level1">
 <h1>Clustering</h1>
 <p>Clustering is a technique that groups similar objects such that the objects in the same group are more similar to each other than the objects in the other groups.</p>
 <p>This differs from classification which uses predefined classes to which objects are assigned, while clustering identifies similarities between the objects, which it then groups, or clusters, based on their similar characteristics.</p>
 <p>Clustering is an unsupervised machine learning task. Meaning you give an algorithm data with no labels and let it find any groupings in the data.</p>
-<p>There are many clustering methods: - density based - distribution based - centroid based - k-means clustering - hierarchical clustering</p>
+<p>There are many clustering methods:</p>
+<ul>
+<li>density based</li>
+<li>distribution based</li>
+<li>centroid based</li>
+<li>k-means clustering</li>
+<li>hierarchical clustering</li>
+</ul>
 </div>
-<div id="how-is-it-used" class="section level1">
-<h1>How is it used?</h1>
+<div id="why-is-it-used" class="section level1">
+<h1>Why is it used?</h1>
 <ul>
 <li>Organise, or provide structure, to large unstructured datasets</li>
-<li>Can be a useful initial step in any data analysis situation</li>
+<li>Can be a useful initial step analysing a dataset</li>
 <li>Data mining</li>
-<li>Behavioural segmentation in a marketing context</li>
+<li>Behavioural segmentation in marketing</li>
 <li>Recommendation systems i.e. Netflix</li>
 <li>Fraud detection system in finance</li>
 <li>Medical imaging</li>
@@ -248,12 +244,27 @@ library(dendextend)</code></pre>
 <div id="hierarchical-clustering" class="section level1">
 <h1>Hierarchical Clustering</h1>
 <p>Hierarchical clustering involves successively joining or splitting groups to form clusters of objects.</p>
-<p>Can be divided into two methods: - Agglomerative method: works in a bottom-up manner. Each object is considered a single element cluster, or leaf. The algorithm then clusters together the two most similar clusters, and the process iterated until all points are a member of just one single big cluster. - Divisive method: is the inverse order of the agglomerative method and works in a top-down manner in which all of the observations are assigned to a single cluster and then the cluster divided to the two least similar clusters. This is repeated until each object is in their own cluster.</p>
+<p>Can be divided into two methods:</p>
+<ul>
+<li>Agglomerative method: works in a bottom-up manner. Each object is considered a single element cluster, or leaf. The algorithm then clusters together the two most similar clusters, and the process iterated until all points are a member of just one single big cluster.</li>
+<li>Divisive method: is the inverse order of the agglomerative method and works in a top-down manner in which all of the observations are assigned to a single cluster and then the cluster divided to the two least similar clusters. This is repeated until each object is in their own cluster.</li>
+</ul>
 </div>
 <div id="advantages-disadvantages" class="section level1">
 <h1>Advantages &amp; disadvantages</h1>
-<p>Advantages: - No need to specify the number of clusters (does not tell you how many clusters there should be) - Easy to implement and interpret the results - The main output, the dendrogram, is appealing to users - Provides an order to the data</p>
-<p>Disadvantages: - Does not work well with missing data - Doesn’t suit very large datasets - Sensitive to noise and outliers</p>
+<p>Advantages:</p>
+<ul>
+<li>No need to specify the number of clusters (does not tell you how many clusters there should be)</li>
+<li>Easy to implement and interpret the results</li>
+<li>The main output, the dendrogram, is appealing to users</li>
+<li>Provides an order to the data</li>
+</ul>
+<p>Disadvantages:</p>
+<ul>
+<li>Does not work well with missing data</li>
+<li>Doesn’t suit very large datasets</li>
+<li>Sensitive to noise and outliers</li>
+</ul>
 </div>
 <div id="an-example-in-r-agglomerative-method" class="section level1">
 <h1>An example in R (Agglomerative Method)</h1>
@@ -286,7 +297,7 @@ plot(hc1, cex = 0.6, hang = -1)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiSGllcmFyY2hpY2FsIENsdXN0ZXJpbmciCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCgpgYGB7cn0KIyBsb2FkIGluIHRoZSByZXF1aXJlZCBsaWJyYXJpZXMKbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoY2x1c3RlcikKbGlicmFyeShmYWN0b2V4dHJhKQpsaWJyYXJ5KGRlbmRleHRlbmQpCmBgYAoKIyBDbHVzdGVyaW5nIAoKQ2x1c3RlcmluZyBpcyBhIHRlY2huaXF1ZSB0aGF0IGdyb3VwcyBzaW1pbGFyIG9iamVjdHMgc3VjaCB0aGF0IHRoZSBvYmplY3RzIGluIHRoZSBzYW1lIGdyb3VwIGFyZSBtb3JlIHNpbWlsYXIgdG8gZWFjaCBvdGhlciB0aGFuIHRoZSBvYmplY3RzIGluIHRoZSBvdGhlciBncm91cHMuCgpUaGlzIGRpZmZlcnMgZnJvbSBjbGFzc2lmaWNhdGlvbiB3aGljaCB1c2VzIHByZWRlZmluZWQgY2xhc3NlcyB0byB3aGljaCBvYmplY3RzIGFyZSBhc3NpZ25lZCwgd2hpbGUgY2x1c3RlcmluZyBpZGVudGlmaWVzIHNpbWlsYXJpdGllcyBiZXR3ZWVuIHRoZSBvYmplY3RzLCB3aGljaCBpdCB0aGVuIGdyb3Vwcywgb3IgY2x1c3RlcnMsIGJhc2VkIG9uIHRoZWlyIHNpbWlsYXIgY2hhcmFjdGVyaXN0aWNzLgoKQ2x1c3RlcmluZyBpcyBhbiB1bnN1cGVydmlzZWQgbWFjaGluZSBsZWFybmluZyB0YXNrLiBNZWFuaW5nIHlvdSBnaXZlIGFuIGFsZ29yaXRobSBkYXRhIHdpdGggbm8gbGFiZWxzIGFuZCBsZXQgaXQgZmluZCBhbnkgZ3JvdXBpbmdzIGluIHRoZSBkYXRhLgoKVGhlcmUgYXJlIG1hbnkgY2x1c3RlcmluZyBtZXRob2RzOgotIGRlbnNpdHkgYmFzZWQKLSBkaXN0cmlidXRpb24gYmFzZWQKLSBjZW50cm9pZCBiYXNlZAotIGstbWVhbnMgY2x1c3RlcmluZwotIGhpZXJhcmNoaWNhbCBjbHVzdGVyaW5nCgojIEhvdyBpcyBpdCB1c2VkPwoKLSBPcmdhbmlzZSwgb3IgcHJvdmlkZSBzdHJ1Y3R1cmUsIHRvIGxhcmdlIHVuc3RydWN0dXJlZCBkYXRhc2V0cwotIENhbiBiZSBhIHVzZWZ1bCBpbml0aWFsIHN0ZXAgaW4gYW55IGRhdGEgYW5hbHlzaXMgc2l0dWF0aW9uIAotIERhdGEgbWluaW5nCi0gQmVoYXZpb3VyYWwgc2VnbWVudGF0aW9uIGluIGEgbWFya2V0aW5nIGNvbnRleHQKLSBSZWNvbW1lbmRhdGlvbiBzeXN0ZW1zIGkuZS4gTmV0ZmxpeAotIEZyYXVkIGRldGVjdGlvbiBzeXN0ZW0gaW4gZmluYW5jZQotIE1lZGljYWwgaW1hZ2luZwoKIyBIaWVyYXJjaGljYWwgQ2x1c3RlcmluZwoKSGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcgaW52b2x2ZXMgc3VjY2Vzc2l2ZWx5IGpvaW5pbmcgb3Igc3BsaXR0aW5nIGdyb3VwcyB0byBmb3JtIGNsdXN0ZXJzIG9mIG9iamVjdHMuCgpDYW4gYmUgZGl2aWRlZCBpbnRvIHR3byBtZXRob2RzOgotIEFnZ2xvbWVyYXRpdmUgbWV0aG9kOiB3b3JrcyBpbiBhIGJvdHRvbS11cCBtYW5uZXIuIEVhY2ggb2JqZWN0IGlzIGNvbnNpZGVyZWQgYSBzaW5nbGUgZWxlbWVudCBjbHVzdGVyLCBvciBsZWFmLiBUaGUgYWxnb3JpdGhtIHRoZW4gY2x1c3RlcnMgdG9nZXRoZXIgdGhlIHR3byBtb3N0IHNpbWlsYXIgY2x1c3RlcnMsIGFuZCB0aGUgcHJvY2VzcyBpdGVyYXRlZCB1bnRpbCBhbGwgcG9pbnRzIGFyZSBhIG1lbWJlciBvZiBqdXN0IG9uZSBzaW5nbGUgYmlnIGNsdXN0ZXIuCi0gRGl2aXNpdmUgbWV0aG9kOiBpcyB0aGUgaW52ZXJzZSBvcmRlciBvZiB0aGUgYWdnbG9tZXJhdGl2ZSBtZXRob2QgYW5kIHdvcmtzIGluIGEgdG9wLWRvd24gbWFubmVyIGluIHdoaWNoIGFsbCBvZiB0aGUgb2JzZXJ2YXRpb25zIGFyZSBhc3NpZ25lZCB0byBhIHNpbmdsZSBjbHVzdGVyIGFuZCB0aGVuIHRoZSBjbHVzdGVyIGRpdmlkZWQgdG8gdGhlIHR3byBsZWFzdCBzaW1pbGFyIGNsdXN0ZXJzLiBUaGlzIGlzIHJlcGVhdGVkIHVudGlsIGVhY2ggb2JqZWN0IGlzIGluIHRoZWlyIG93biBjbHVzdGVyLgoKIyBBZHZhbnRhZ2VzICYgZGlzYWR2YW50YWdlcwoKQWR2YW50YWdlczoKLSBObyBuZWVkIHRvIHNwZWNpZnkgdGhlIG51bWJlciBvZiBjbHVzdGVycyAoZG9lcyBub3QgdGVsbCB5b3UgaG93IG1hbnkgY2x1c3RlcnMgdGhlcmUgc2hvdWxkIGJlKQotIEVhc3kgdG8gaW1wbGVtZW50IGFuZCBpbnRlcnByZXQgdGhlIHJlc3VsdHMKLSBUaGUgbWFpbiBvdXRwdXQsIHRoZSBkZW5kcm9ncmFtLCBpcyBhcHBlYWxpbmcgdG8gdXNlcnMKLSBQcm92aWRlcyBhbiBvcmRlciB0byB0aGUgZGF0YQoKRGlzYWR2YW50YWdlczoKLSBEb2VzIG5vdCB3b3JrIHdlbGwgd2l0aCBtaXNzaW5nIGRhdGEKLSBEb2Vzbid0IHN1aXQgdmVyeSBsYXJnZSBkYXRhc2V0cwotIFNlbnNpdGl2ZSB0byBub2lzZSBhbmQgb3V0bGllcnMKCiMgQW4gZXhhbXBsZSBpbiBSIChBZ2dsb21lcmF0aXZlIE1ldGhvZCkKCmBgYHtyfQojIHJlbW92ZSBhbGwgTkFzCmRmIDwtIFVTQXJyZXN0cwoKIyByZW1vdmUgYW55IG1pc3NpbmcgZGF0YQojIHVzaW5nIHNjYWxlKCkgdHJhbnNmb3JtIHRoZSB2YXJpYWJsZXMgc3VjaCB0aGF0IHRoZXkgaGF2ZSBtZWFuIHplcm8gYW5kIHN0YW5kYXJkIGRldmlhdGlvbiBvbmUuCmRmX2NsZWFuIDwtIGRmICU+JSAKICBmaWx0ZXIoIWlzLm5hKC4pKSAlPiUgCiAgc2NhbGUoKQoKIyBjYWxjdWxhdGUgbWF4aW11bSBkaXN0YW5jZSBiZXR3ZWVuIGVhY2ggcm93IGluIHRoZSBkYXRhc2V0CmQgPC0gZGlzdChkZiwgbWV0aG9kID0gImV1Y2xpZGVhbiIpCgojIGhpZXJhcmNoaWNhbCBjbHVzdGVyaW5nIHVzaW5nIENvbXBsZXRlIExpbmthZ2UKaGMxIDwtIGhjbHVzdChkLCBtZXRob2QgPSAiY29tcGxldGUiKQoKIyBwbG90IHRoZSBkZW5kcm9ncmFtCnBsb3QoaGMxLCBjZXggPSAwLjYsIGhhbmcgPSAtMSkKYGBgCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSGllcmFyY2hpY2FsIENsdXN0ZXJpbmciCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KIyBDbHVzdGVyaW5nIAoKQ2x1c3RlcmluZyBpcyBhIHRlY2huaXF1ZSB0aGF0IGdyb3VwcyBzaW1pbGFyIG9iamVjdHMgc3VjaCB0aGF0IHRoZSBvYmplY3RzIGluIHRoZSBzYW1lIGdyb3VwIGFyZSBtb3JlIHNpbWlsYXIgdG8gZWFjaCBvdGhlciB0aGFuIHRoZSBvYmplY3RzIGluIHRoZSBvdGhlciBncm91cHMuCgpUaGlzIGRpZmZlcnMgZnJvbSBjbGFzc2lmaWNhdGlvbiB3aGljaCB1c2VzIHByZWRlZmluZWQgY2xhc3NlcyB0byB3aGljaCBvYmplY3RzIGFyZSBhc3NpZ25lZCwgd2hpbGUgY2x1c3RlcmluZyBpZGVudGlmaWVzIHNpbWlsYXJpdGllcyBiZXR3ZWVuIHRoZSBvYmplY3RzLCB3aGljaCBpdCB0aGVuIGdyb3Vwcywgb3IgY2x1c3RlcnMsIGJhc2VkIG9uIHRoZWlyIHNpbWlsYXIgY2hhcmFjdGVyaXN0aWNzLgoKQ2x1c3RlcmluZyBpcyBhbiB1bnN1cGVydmlzZWQgbWFjaGluZSBsZWFybmluZyB0YXNrLiBNZWFuaW5nIHlvdSBnaXZlIGFuIGFsZ29yaXRobSBkYXRhIHdpdGggbm8gbGFiZWxzIGFuZCBsZXQgaXQgZmluZCBhbnkgZ3JvdXBpbmdzIGluIHRoZSBkYXRhLgoKVGhlcmUgYXJlIG1hbnkgY2x1c3RlcmluZyBtZXRob2RzOgoKLSBkZW5zaXR5IGJhc2VkCi0gZGlzdHJpYnV0aW9uIGJhc2VkCi0gY2VudHJvaWQgYmFzZWQKLSBrLW1lYW5zIGNsdXN0ZXJpbmcKLSBoaWVyYXJjaGljYWwgY2x1c3RlcmluZwoKIyBXaHkgaXMgaXQgdXNlZD8KCi0gT3JnYW5pc2UsIG9yIHByb3ZpZGUgc3RydWN0dXJlLCB0byBsYXJnZSB1bnN0cnVjdHVyZWQgZGF0YXNldHMKLSBDYW4gYmUgYSB1c2VmdWwgaW5pdGlhbCBzdGVwIGFuYWx5c2luZyBhIGRhdGFzZXQKLSBEYXRhIG1pbmluZwotIEJlaGF2aW91cmFsIHNlZ21lbnRhdGlvbiBpbiBtYXJrZXRpbmcKLSBSZWNvbW1lbmRhdGlvbiBzeXN0ZW1zIGkuZS4gTmV0ZmxpeAotIEZyYXVkIGRldGVjdGlvbiBzeXN0ZW0gaW4gZmluYW5jZQotIE1lZGljYWwgaW1hZ2luZwoKIyBIaWVyYXJjaGljYWwgQ2x1c3RlcmluZwoKSGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcgaW52b2x2ZXMgc3VjY2Vzc2l2ZWx5IGpvaW5pbmcgb3Igc3BsaXR0aW5nIGdyb3VwcyB0byBmb3JtIGNsdXN0ZXJzIG9mIG9iamVjdHMuCgpDYW4gYmUgZGl2aWRlZCBpbnRvIHR3byBtZXRob2RzOgoKLSBBZ2dsb21lcmF0aXZlIG1ldGhvZDogd29ya3MgaW4gYSBib3R0b20tdXAgbWFubmVyLiBFYWNoIG9iamVjdCBpcyBjb25zaWRlcmVkIGEgc2luZ2xlIGVsZW1lbnQgY2x1c3Rlciwgb3IgbGVhZi4gVGhlIGFsZ29yaXRobSB0aGVuIGNsdXN0ZXJzIHRvZ2V0aGVyIHRoZSB0d28gbW9zdCBzaW1pbGFyIGNsdXN0ZXJzLCBhbmQgdGhlIHByb2Nlc3MgaXRlcmF0ZWQgdW50aWwgYWxsIHBvaW50cyBhcmUgYSBtZW1iZXIgb2YganVzdCBvbmUgc2luZ2xlIGJpZyBjbHVzdGVyLgotIERpdmlzaXZlIG1ldGhvZDogaXMgdGhlIGludmVyc2Ugb3JkZXIgb2YgdGhlIGFnZ2xvbWVyYXRpdmUgbWV0aG9kIGFuZCB3b3JrcyBpbiBhIHRvcC1kb3duIG1hbm5lciBpbiB3aGljaCBhbGwgb2YgdGhlIG9ic2VydmF0aW9ucyBhcmUgYXNzaWduZWQgdG8gYSBzaW5nbGUgY2x1c3RlciBhbmQgdGhlbiB0aGUgY2x1c3RlciBkaXZpZGVkIHRvIHRoZSB0d28gbGVhc3Qgc2ltaWxhciBjbHVzdGVycy4gVGhpcyBpcyByZXBlYXRlZCB1bnRpbCBlYWNoIG9iamVjdCBpcyBpbiB0aGVpciBvd24gY2x1c3Rlci4KCiMgQWR2YW50YWdlcyAmIGRpc2FkdmFudGFnZXMKCkFkdmFudGFnZXM6CgotIE5vIG5lZWQgdG8gc3BlY2lmeSB0aGUgbnVtYmVyIG9mIGNsdXN0ZXJzIChkb2VzIG5vdCB0ZWxsIHlvdSBob3cgbWFueSBjbHVzdGVycyB0aGVyZSBzaG91bGQgYmUpCi0gRWFzeSB0byBpbXBsZW1lbnQgYW5kIGludGVycHJldCB0aGUgcmVzdWx0cwotIFRoZSBtYWluIG91dHB1dCwgdGhlIGRlbmRyb2dyYW0sIGlzIGFwcGVhbGluZyB0byB1c2VycwotIFByb3ZpZGVzIGFuIG9yZGVyIHRvIHRoZSBkYXRhCgpEaXNhZHZhbnRhZ2VzOgoKLSBEb2VzIG5vdCB3b3JrIHdlbGwgd2l0aCBtaXNzaW5nIGRhdGEKLSBEb2Vzbid0IHN1aXQgdmVyeSBsYXJnZSBkYXRhc2V0cwotIFNlbnNpdGl2ZSB0byBub2lzZSBhbmQgb3V0bGllcnMKCiMgQW4gZXhhbXBsZSBpbiBSIChBZ2dsb21lcmF0aXZlIE1ldGhvZCkKCmBgYHtyfQojIGxvYWQgaW4gdGhlIHJlcXVpcmVkIGxpYnJhcmllcwpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShjbHVzdGVyKQpsaWJyYXJ5KGZhY3RvZXh0cmEpCmxpYnJhcnkoZGVuZGV4dGVuZCkKCiMgcmVtb3ZlIGFsbCBOQXMKZGYgPC0gVVNBcnJlc3RzCgojIHJlbW92ZSBhbnkgbWlzc2luZyBkYXRhCiMgdXNpbmcgc2NhbGUoKSB0cmFuc2Zvcm0gdGhlIHZhcmlhYmxlcyBzdWNoIHRoYXQgdGhleSBoYXZlIG1lYW4gemVybyBhbmQgc3RhbmRhcmQgZGV2aWF0aW9uIG9uZS4KZGZfY2xlYW4gPC0gZGYgJT4lIAogIGZpbHRlcighaXMubmEoLikpICU+JSAKICBzY2FsZSgpCgojIGNhbGN1bGF0ZSBtYXhpbXVtIGRpc3RhbmNlIGJldHdlZW4gZWFjaCByb3cgaW4gdGhlIGRhdGFzZXQKZCA8LSBkaXN0KGRmLCBtZXRob2QgPSAiZXVjbGlkZWFuIikKCiMgaGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcgdXNpbmcgQ29tcGxldGUgTGlua2FnZQpoYzEgPC0gaGNsdXN0KGQsIG1ldGhvZCA9ICJjb21wbGV0ZSIpCgojIHBsb3QgdGhlIGRlbmRyb2dyYW0KcGxvdChoYzEsIGNleCA9IDAuNiwgaGFuZyA9IC0xKQpgYGAKCgo=</div>
 
 
 

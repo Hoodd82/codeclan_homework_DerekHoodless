@@ -2,16 +2,6 @@
 title: "Hierarchical Clustering"
 output: html_notebook
 ---
-
-
-```{r}
-# load in the required libraries
-library(tidyverse)
-library(cluster)
-library(factoextra)
-library(dendextend)
-```
-
 # Clustering 
 
 Clustering is a technique that groups similar objects such that the objects in the same group are more similar to each other than the objects in the other groups.
@@ -21,18 +11,19 @@ This differs from classification which uses predefined classes to which objects 
 Clustering is an unsupervised machine learning task. Meaning you give an algorithm data with no labels and let it find any groupings in the data.
 
 There are many clustering methods:
+
 - density based
 - distribution based
 - centroid based
 - k-means clustering
 - hierarchical clustering
 
-# How is it used?
+# Why is it used?
 
 - Organise, or provide structure, to large unstructured datasets
-- Can be a useful initial step in any data analysis situation 
+- Can be a useful initial step analysing a dataset
 - Data mining
-- Behavioural segmentation in a marketing context
+- Behavioural segmentation in marketing
 - Recommendation systems i.e. Netflix
 - Fraud detection system in finance
 - Medical imaging
@@ -42,18 +33,21 @@ There are many clustering methods:
 Hierarchical clustering involves successively joining or splitting groups to form clusters of objects.
 
 Can be divided into two methods:
+
 - Agglomerative method: works in a bottom-up manner. Each object is considered a single element cluster, or leaf. The algorithm then clusters together the two most similar clusters, and the process iterated until all points are a member of just one single big cluster.
 - Divisive method: is the inverse order of the agglomerative method and works in a top-down manner in which all of the observations are assigned to a single cluster and then the cluster divided to the two least similar clusters. This is repeated until each object is in their own cluster.
 
 # Advantages & disadvantages
 
 Advantages:
+
 - No need to specify the number of clusters (does not tell you how many clusters there should be)
 - Easy to implement and interpret the results
 - The main output, the dendrogram, is appealing to users
 - Provides an order to the data
 
 Disadvantages:
+
 - Does not work well with missing data
 - Doesn't suit very large datasets
 - Sensitive to noise and outliers
@@ -61,6 +55,12 @@ Disadvantages:
 # An example in R (Agglomerative Method)
 
 ```{r}
+# load in the required libraries
+library(tidyverse)
+library(cluster)
+library(factoextra)
+library(dendextend)
+
 # remove all NAs
 df <- USArrests
 
