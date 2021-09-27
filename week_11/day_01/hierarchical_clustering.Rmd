@@ -39,7 +39,7 @@ There are many clustering methods:
 
 # Hierarchical Clustering
 
-Hierarchical clustering involves creating clusters by successively joining or splitting groups to form groups of objects.
+Hierarchical clustering involves successively joining or splitting groups to form clusters of objects.
 
 Can be divided into two methods:
 - Agglomerative method: works in a bottom-up manner. Each object is considered a single element cluster, or leaf. The algorithm then clusters together the two most similar clusters, and the process iterated until all points are a member of just one single big cluster.
@@ -79,5 +79,5 @@ hc1 <- hclust(d, method = "complete")
 # plot the dendrogram
 plot(hc1, cex = 0.6, hang = -1)
 ```
-To interpreting a dendrogram you focus on the height at which any two objects are joined together.
+
 
