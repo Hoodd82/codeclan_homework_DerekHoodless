@@ -35,6 +35,12 @@ wordcloud(
   rot.per = 0.35,
   colors=brewer.pal(8, "Dark2")
 )
+
+ggwordcloud(
+  words = little_mermaid$word,
+  freq = little_mermaid$n,
+  min.freq = 10
+)
 ```
 
 # MVP 2
@@ -164,3 +170,9 @@ thumbelina_df %>%
   ) +
   theme_bw()
 ```
+
+```{r}
+library(text2vec)
+glimpse(movie_review)
+```
+

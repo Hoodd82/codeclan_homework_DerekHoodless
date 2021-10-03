@@ -1,0 +1,186 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(rJava)
+library(glmulti)
+library(tidyverse)
+library(janitor)
+library(ggfortify)
+library(GGally)
+library(broom)
+```
+
+```{r}
+oj_data <- read_csv("data/orange_juice.csv") %>%
+  clean_names()
+
+summary(oj_data)
+str(oj_data)
+
+unique(oj_data$weekof_purchase)
+
+unique(oj_data$store)
+unique(oj_data$store_id)
+unique(oj_data$store7)
+```
+
+```{r}
+# update purchase column - TRUE for CH and FALSE for MM
+# drop store7, store and purchase - these variables duplicate information captured in store_id, purchase column is not reqd
+# convert store_id, special_ch and special_mm to factor
+oj_data <- oj_data %>% 
+  mutate(purchase_mm = ifelse(purchase == "MM", TRUE, FALSE),
+         store_id = as.factor(store_id),
+         special_ch = as.factor(special_ch),
+         special_mm = as.factor(special_mm)) %>% 
+    select(-c(store, store7, purchase))
+```
+
+```{r}
+# check for aliases
+alias(purchase_mm ~ ., data = oj_data)
+```
+
+```{r}
+# alias identified sale_price_mm, sale_price_ch, price_diff and list_price_diff, these variables shall be dropped
+# also chosen to drop weekof_purchase - if I had more time I would consider converting to a factor...
+oj_data_clean <- oj_data %>% 
+  select(-c(sale_price_mm, sale_price_ch, price_diff, list_price_diff, weekof_purchase))
+oj_data_clean
+```
+
+```{r}
+# view the ggpairs plot
+ggpairs(oj_data_clean)
+```
+
+```{r}
+# split the data into test and train datasets
+n_data <- nrow(oj_data_clean)
+
+# create a test sample index
+test_index <- sample(1:n_data, size = n_data*0.2)
+
+# create test set
+oj_test  <- slice(oj_data_clean, test_index)
+
+# create training set
+oj_train <- slice(oj_data_clean, -test_index)
+```
+
+```{r}
+# check the proportions for out train and test datasets
+oj_train %>%
+  tabyl(purchase_mm)
+
+oj_test %>%
+  tabyl(purchase_mm)
+```
+
+```{r}
+glmulti_trial_run <- glmulti(
+  purchase_mm ~ ., 
+  data = oj_train,
+  level = 1,               # No interactions considered, main effects only
+  method = "d",            # method "d" means trial run, to get size of problem
+  crit = "bic",            # BIC as criteria
+  confsetsize = 10,        # Keep 10 best models
+  plotty = FALSE, 
+  report = TRUE,              # No plots, but provide interim reports
+  fitfunction = "glm",     # glm function
+  family = binomial(link = "logit"))
+```
+
+```{r}
+glmulti_fit <- glmulti(
+  purchase_mm ~ ., 
+  data = oj_train,
+  level = 1,               # No interactions considered, main effects only
+  method = "h",            # method "h" means exhausive
+  crit = "bic",            # BIC as criteria
+  confsetsize = 100,        # Keep 100 best models
+  plotty = FALSE, 
+  report = TRUE,           # No plots, but provide interim reports
+  fitfunction = "glm",     # glm function
+  family = binomial(link = "logit"))
+
+summary(glmulti_fit)
+```
+
+```{r}
+glmulti_fit_one_pair <- glmulti(
+  purchase_mm ~ 1 + price_ch + price_mm + disc_mm + loyal_ch + pct_disc_ch + pct_disc_mm, 
+  data = oj_train,
+  level = 2,               # Interactions considered
+  method = "h",            # Exhaustive approach
+  crit = "bic",            # BIC as criteria
+  confsetsize = 10,        # Keep 10 best models
+  marginality = TRUE,      # consider pairs only if both main effects in model
+  minsize = 7,             # minsize, maxsize and marginality here force 
+  maxsize = 7,             # inclusion of a single pair beyond the five main effects
+  plotty = FALSE, 
+  report = TRUE,           # No plots, but provide interim reports
+  fitfunction = "glm",     # glm function
+  family = binomial(link = "logit")) # binomial family for logistic regression
+
+summary(glmulti_fit_one_pair)
+```
+
+```{r}
+rmse_results <- numeric(10)
+for (i in 1:10){
+  this_model <- glmulti_fit_one_pair@objects[[i]]
+  predictions <- predict(this_model, newdata = oj_test)
+  rmse_results[i] <- sqrt(mean((predictions - oj_test$purchase_mm)^2))
+}
+                         
+plot(rmse_results)
+
+```
+
+```{r}
+glmulti_fit_one_pair@objects[[10]]
+```
+
+```{r}
+neg_r2 <- function(model){
+  sum_model <- summary(model)
+  return( -1 * sum_model$r.squared)
+}
+```
+
+```{r}
+# save each glmulti_fit object to a list as we go
+best_fits <- list()
+
+# search out to models with x predictors
+num_pred_max <- 7
+
+for (num_pred in 1:num_pred_max){
+  # track progress
+  print(paste("num_pred =", num_pred))
+  
+  # run the search for models of num_pred size
+  glmulti_fit <- glmulti(
+    purchase_mm ~ .,
+    level = 2,
+    data = oj_train,
+    minsize = num_pred, # only models of num_pred size
+    maxsize = num_pred, # only models of num_pred size
+    marginality = TRUE,
+    method = "h",
+    confsetsize = 1, # save only best model from this search
+    plotty = FALSE,
+    report = FALSE,
+    fitfunction = lm,
+    crit = neg_r2 # our custom crit function
+  )
+  
+  best_fits <- append(best_fits, glmulti_fit)
+}
+```
+

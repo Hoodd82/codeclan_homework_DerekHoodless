@@ -1,0 +1,102 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(broom)
+library(factoextra)
+library(CodeClanData)
+```
+
+```{r}
+student_data <- students_big %>% 
+  janitor::clean_names()
+
+summary(student_data)
+
+head(student_data)
+```
+
+# 1 part a ----
+
+```{r}
+# selecting only the columns needed for the clustering
+student_data_clean <- student_data %>% 
+  select(importance_reducing_pollution, importance_recycling_rubbish, importance_conserving_water,
+         importance_saving_enery, importance_owning_computer, importance_internet_access) %>% 
+  # create a student id column
+  rowid_to_column("student_id") %>% 
+  # write student id column to rownames
+  column_to_rownames("student_id")
+student_data_clean
+```
+
+```{r}
+# scale all numeric variables 
+student_data_scale <- student_data_clean %>% 
+  mutate_if(is.numeric, scale)
+student_data_scale
+```
+
+```{r}
+# determining the optimal number of clusters using sum of squares method
+fviz_nbclust(student_data_scale, kmeans, method = "wss", nstart = 25)
+
+# there doesn't appear to be a distinct elbow
+```
+
+```{r}
+# check the data using the silhouette method
+fviz_nbclust(student_data_scale, kmeans, method = "silhouette", nstart = 25)
+
+# the plot is fairly flat, this might suggest there are no clusters in the data!
+```
+
+```{r}
+# check the data using the gap_stat method
+fviz_nbclust(student_data_scale, kmeans, method = "gap_stat", nstart = 25)
+
+# hmmmm, the data in its current form does not appear to be suitable for k-means clustering
+```
+
+# 1 part b ----
+
+```{r}
+# drop variables to leave only the environmental
+student_data_env_scale <- student_data_scale %>% 
+  select(-c(importance_owning_computer, importance_internet_access))
+student_data_env_scale
+```
+
+```{r}
+k_max <- 2
+
+k_clusters <- tibble(k = 1:k_max) %>%
+   mutate(
+     kclust = map(k, ~ kmeans(student_data_env_scale, .x, nstart = 25)),
+     tidied = map(kclust, tidy),
+     glanced = map(kclust, glance),
+    augmented = map(kclust, augment, student_data_env_scale)
+   )
+
+k_clusters
+```
+
+```{r}
+clustered_students <- student_data_env_scale %>% 
+  kmeans(centers = 2, nstart = 25)
+
+fviz_cluster(clustered_students, data = student_data_env_scale, labelsize = 7)
+```
+
+```{r}
+augment(clustered_students, student_data_clean) 
+```
+
+```{r}
+
+```
+
